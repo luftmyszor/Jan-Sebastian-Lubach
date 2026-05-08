@@ -1,0 +1,44 @@
+# Build outputs
+bin/
+obj/
+out/
+
+# Visual Studio and Rider
+.vs/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+.idea/
+*.sln.ide
+
+# VS Code settings
+.vscode/
+
+# NuGet
+packages/
+*.nupkg
+project.lock.json
+project.assets.json
+
+# Publish output
+publish/
+
+# Rider / ReSharper
+.recommenders
+*.DotSettings.user
+_ReSharper*/
+
+# Logs, temp files
+*.log
+*.tmp
+logs/
+*.cache
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Sensitive or local settings
+appsettings.Development.json
+appsettings.*.local.json
