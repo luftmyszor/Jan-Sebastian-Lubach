@@ -13,15 +13,16 @@ var courses = gen.GenerateCourses(60, groups);
 var instructors = gen.GenerateInstructors(30);
 var rooms = gen.GenerateRooms(50);
 
-var mapper = new TimetableMapper(courses, instructors, rooms, 40);
+var mapper = new TimetableMapper(courses, instructors, rooms, 10, 5); // 10 slots/day, 5 days
 
 // ==========================================
 // PLAYGROUND VARIABLES 
 // ==========================================
-int popSize = 1000;
+int popSize = 500;
 float mutRate = 0.08f;
-int elitism = 10;
-int maxGenerations = 2000;
+int elitism = 5;
+int maxGenerations = 20000;
+float parentPercentage = 0.7f;
 // ==========================================
 
 Console.WriteLine($"Courses: {courses.Count} | Population: {popSize} | Mutation: {mutRate:P1}");
