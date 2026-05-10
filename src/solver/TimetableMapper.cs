@@ -10,9 +10,12 @@ public class TimetableMapper
     public List<Room> Rooms { get; private set; }
 
     // --- GA Constants (System Constraints) ---
+    public readonly int SlotsPerDay;
+    public readonly int Days;
     public readonly int R_max;
     public readonly int S_max;
     public readonly int T_max;
+    public readonly int GroupCount;
     public readonly int GenomeLength;
 
     // Pre-calculated multiplier
@@ -22,17 +25,21 @@ public class TimetableMapper
     // We group rooms and instructors by criteria so we can pick valid ones quickly during seed generation
     private Dictionary<string, List<int>> _roomsByType = new();
     private Dictionary<string, List<int>> _instructorsBySubject = new();
+    private Dictionary<string, int> _groupIndexById = new();
 
-    public TimetableMapper(List<Course> courses, List<Instructor> instructors, List<Room> rooms, int totalSlots = 40)
+    public TimetableMapper(List<Course> courses, List<Instructor> instructors, List<Room> rooms, int slotsPerDay = 10, int days = 5)
     {
         Courses = courses;
         Instructors = instructors;
         Rooms = rooms;
+        SlotsPerDay = slotsPerDay;
+        Days = days;
 
         // Set Constraints
         R_max = rooms.Count;
         T_max = instructors.Count;
-        S_max = totalSlots;
+        S_max = slotsPerDay * days;
+        GroupCount = courses.Select(c => c.GroupId).Distinct().Count();
         GenomeLength = courses.Count; // 1 Gene = 1 Course
 
         _RS_Multiplier = R_max * S_max;
@@ -60,6 +67,16 @@ public class TimetableMapper
                 _instructorsBySubject[subject].Add(i);
             }
         }
+
+        _groupIndexById = new Dictionary<string, int>();
+        for (int i = 0; i < Courses.Count; i++)
+        {
+            var groupId = Courses[i].GroupId;
+            if (!_groupIndexById.ContainsKey(groupId))
+            {
+                _groupIndexById[groupId] = _groupIndexById.Count;
+            }
+        }
     }
     
     public int Encode(int t, int r, int s)
@@ -82,37 +99,45 @@ public class TimetableMapper
         return (t, r, s);
     }
 
+    public int GetGroupIndex(string groupId)
+    {
+        return _groupIndexById[groupId];
+    }
+
     // --- INITIAL POPULATION BUILDER ---
     
     /// <summary>
-    /// Generates a single Genome where hard constraints H4 (Teacher Qualified) 
+    /// Generates a single Gene where hard constraints H4 (Teacher Qualified) 
     /// and H5 (Room Type Correct) are already satisfied.
     /// </summary>
+    public int CreateSingleValidGene(int courseIndex, Random rand)
+    {
+        var course = Courses[courseIndex];
+
+        // 1. Pick a valid Teacher (T)
+        var validTeachers = _instructorsBySubject[course.SubjectId];
+        int t = validTeachers[rand.Next(validTeachers.Count)];
+
+        // 2. Pick a valid Room (R)
+        var validRooms = _roomsByType[course.RequiredRoomType];
+        int r = validRooms[rand.Next(validRooms.Count)];
+
+        // 3. Pick a random Start Slot (S)
+        // Prevent the course from overflowing past the end of the day.
+        int day = rand.Next(0, Days);
+        int maxStartInDay = SlotsPerDay - course.RequiredSlots; // Prevent overflow
+        int sInDay = rand.Next(0, maxStartInDay + 1);
+        int s = (day * SlotsPerDay) + sInDay;
+
+        return Encode(t, r, s);
+    }
     public Genome CreateSmartSeedGenome(Random rand)
     {
         int[] genes = new int[GenomeLength];
 
         for (int i = 0; i < GenomeLength; i++)
         {
-            var course = Courses[i];
-
-            // 1. Pick a valid Teacher (T)
-            var validTeachers = _instructorsBySubject[course.SubjectId];
-            int t = validTeachers[rand.Next(validTeachers.Count)];
-
-            // 2. Pick a valid Room (R)
-            var validRooms = _roomsByType[course.RequiredRoomType];
-            int r = validRooms[rand.Next(validRooms.Count)];
-
-            // 3. Pick a random Start Slot (S)
-            // Prevent the course from overflowing past the end of the day.
-            int day = rand.Next(0, 5); // Assuming 5 days
-            int maxStartInDay = 10 - course.RequiredSlots; // Assuming 10 slots per day
-            int sInDay = rand.Next(0, maxStartInDay + 1);
-            int s = (day * 8) + sInDay;
-
-            // 4. Encode and store in the genome
-            genes[i] = Encode(t, r, s);
+            genes[i] = CreateSingleValidGene(i, rand);
         }
 
         return new Genome(genes);

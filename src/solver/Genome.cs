@@ -1,4 +1,5 @@
 using System;
+using System.Buffers;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -24,7 +25,7 @@ public class FitnessEvaluator
     private readonly TimetableMapper _mapper;
     
     // Weight of penalty per violation. ly.
-    private const float HARD_PENALTY = -1000f; 
+    private const float HARD_PENALTY = -1f; 
 
     public FitnessEvaluator(TimetableMapper mapper)
     {
@@ -39,23 +40,21 @@ public class FitnessEvaluator
         int h4_violations = 0, h5_violations = 0, h6_violations = 0;
         int h7_violations = 0;
 
-        // 2. Run the Hard Constraints in Parallel
-        // Note: We already run the POPULATION in parallel. Running individual constraints 
-        // in parallel can sometimes cause thread-overhead slowdowns, but this is how you do it!
-        Parallel.Invoke(
-            () => h1_violations = CheckH1_TeacherSingleBooked(decodedSchedule),
-            () => h2_violations = CheckH2_RoomSingleBooked(decodedSchedule),
-            () => h3_violations = CheckH3_RoomCapacity(decodedSchedule),
-            () => h4_violations = CheckH4_TeacherQualified(decodedSchedule),
-            () => h5_violations = CheckH5_RoomTypeCorrect(decodedSchedule),
-            () => h6_violations = CheckH6_TeacherAvailable(decodedSchedule),
-            () => h7_violations = CheckH7_StudentGroupSingleBooked(decodedSchedule)
-        );
+        // 2. DO NOT reun in parallel - causes thread starvation
+            h1_violations = CheckH1_TeacherSingleBooked(decodedSchedule);
+            h2_violations = CheckH2_RoomSingleBooked(decodedSchedule);
+            h3_violations = CheckH3_RoomCapacity(decodedSchedule);
+            h4_violations = CheckH4_TeacherQualified(decodedSchedule);
+            h5_violations = CheckH5_RoomTypeCorrect(decodedSchedule);
+            h6_violations = CheckH6_TeacherAvailable(decodedSchedule);
+            h7_violations = CheckH7_StudentGroupSingleBooked(decodedSchedule);
+        
 
         int totalHardViolations = h1_violations + h2_violations + h3_violations + 
-                                  h4_violations + h5_violations + h6_violations;
+                                  h4_violations + h5_violations + h6_violations + 
+                                  h7_violations;
 
-        // If Violations = 0 (as per your diagram), you would run Soft Constraints here.
+        // If Violations = 0 (
         if (totalHardViolations == 0)
         {
             // TODO: Run S1, S2, S3, S4
@@ -64,6 +63,7 @@ public class FitnessEvaluator
         }
 
         // Return a heavily penalized score based on how many rules it broke
+        //return totalHardViolations * HARD_PENALTY;
         return totalHardViolations * HARD_PENALTY;
     }
 
@@ -77,6 +77,7 @@ public class FitnessEvaluator
         {
             var (t, r, s) = _mapper.Decode(genes[i]);
             var course = _mapper.Courses[i];
+            var groupIndex = _mapper.GetGroupIndex(course.GroupId);
             
             // Expand the start slot 's' into a list of all occupied slots
             // e.g., Start slot 10, length 3 -> occupies slots [10, 11, 12]
@@ -90,6 +91,7 @@ public class FitnessEvaluator
             { 
                 CourseIndex = i, Course = course, 
                 T = t, R = r, S = s, 
+                GroupIndex = groupIndex,
                 OccupiedSlots = occupiedSlots 
             });
         }
@@ -101,40 +103,54 @@ public class FitnessEvaluator
     private int CheckH1_TeacherSingleBooked(List<DecodedGene> schedule)
     {
         int violations = 0;
-        var teacherGroups = schedule.GroupBy(g => g.T);
+        int[] teacherBookingMatrix = ArrayPool<int>.Shared.Rent(_mapper.T_max * _mapper.S_max);
+        Array.Clear(teacherBookingMatrix, 0, teacherBookingMatrix.Length);
 
-        foreach (var group in teacherGroups)
+        foreach (var gene in schedule)
         {
-            // Check if any of this teacher's occupied slots have duplicates
-            var allOccupiedSlots = group.SelectMany(g => g.OccupiedSlots).ToList();
-            var uniqueSlots = new HashSet<int>();
-            
-            foreach (var slot in allOccupiedSlots)
+            foreach (var slot in gene.OccupiedSlots)
             {
-                if (!uniqueSlots.Add(slot)) violations++;
+                int index = (gene.T * _mapper.S_max) + slot;
+
+                if (teacherBookingMatrix[index] == 1)
+                {
+                    violations++;
+                }
+
+                teacherBookingMatrix[index] = 1;
             }
         }
+
+        ArrayPool<int>.Shared.Return(teacherBookingMatrix);
         return violations;
     }
 
     private int CheckH2_RoomSingleBooked(List<DecodedGene> schedule)
-    {
-        int violations = 0;
-        var roomGroups = schedule.GroupBy(g => g.R);
+{
+    int violations = 0;
+    // Create an array tracking slots. Size = Total Rooms * Total Slots.
+    // e.g., 50 rooms * 50 slots = 2500 integers. ArrayPool is perfect here!
+    int[] roomBookingMatrix = ArrayPool<int>.Shared.Rent(_mapper.R_max * _mapper.S_max);
+    Array.Clear(roomBookingMatrix, 0, roomBookingMatrix.Length);
 
-        foreach (var group in roomGroups)
+    foreach (var gene in schedule)
+    {
+        foreach (var slot in gene.OccupiedSlots)
         {
-            // Check if any of this room's occupied slots have duplicates
-            var allOccupiedSlots = group.SelectMany(g => g.OccupiedSlots).ToList();
-            var uniqueSlots = new HashSet<int>();
+            // 1D array indexing simulating a 2D grid [Room, Slot]
+            int index = (gene.R * _mapper.S_max) + slot;
             
-            foreach (var slot in allOccupiedSlots)
+            if (roomBookingMatrix[index] == 1) 
             {
-                if (!uniqueSlots.Add(slot)) violations++; // Duplicate found!
+                violations++; // Already booked!
             }
+            roomBookingMatrix[index] = 1; // Mark as booked
         }
-        return violations;
     }
+    
+    ArrayPool<int>.Shared.Return(roomBookingMatrix);
+    return violations;
+}
 
     private int CheckH3_RoomCapacity(List<DecodedGene> schedule)
     {
@@ -200,26 +216,26 @@ public class FitnessEvaluator
     private int CheckH7_StudentGroupSingleBooked(List<DecodedGene> schedule)
     {
         int violations = 0;
-        
-        // Group all scheduled events by the Student Group ID (e.g., "IS1A")
-        var studentGroups = schedule.GroupBy(g => g.Course.GroupId);
 
-        foreach (var group in studentGroups)
+        int[] groupBookingMatrix = ArrayPool<int>.Shared.Rent(_mapper.GroupCount * _mapper.S_max);
+        Array.Clear(groupBookingMatrix, 0, groupBookingMatrix.Length);
+
+        foreach (var gene in schedule)
         {
-            // Gather every single slot this specific group of students is supposed to be in class
-            var allOccupiedSlots = group.SelectMany(g => g.OccupiedSlots).ToList();
-            var uniqueSlots = new HashSet<int>();
-            
-            foreach (var slot in allOccupiedSlots)
+            foreach (var slot in gene.OccupiedSlots)
             {
-                // If we can't add the slot to the set, it means this student group 
-                // is scheduled for two different classes at the exact same time!
-                if (!uniqueSlots.Add(slot)) 
+                int index = (gene.GroupIndex * _mapper.S_max) + slot;
+
+                if (groupBookingMatrix[index] == 1)
                 {
                     violations++;
                 }
+
+                groupBookingMatrix[index] = 1;
             }
         }
+
+        ArrayPool<int>.Shared.Return(groupBookingMatrix);
         return violations;
     }
 
@@ -231,6 +247,7 @@ public class FitnessEvaluator
         public int T;
         public int R;
         public int S;
+        public int GroupIndex;
         public List<int> OccupiedSlots;
     }
 }

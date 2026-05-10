@@ -12,16 +12,21 @@ public class GeneticAlgorithm
     private readonly int _genomeLength;
     private readonly float _mutationRate;
     private readonly int _elitismCount;
+    private readonly float _parentSelectionPercentage;
+    private readonly int _breedablePoolSize;
     private readonly TimetableMapper _mapper;
 
     // Pass the mapper into the GA constructor
-    public GeneticAlgorithm(int popSize, float mutRate, int elite, TimetableMapper mapper)
+    public GeneticAlgorithm(int popSize, float mutRate, int elite, TimetableMapper mapper, float parentSelectionPercentage = 0.3f)
     {
         _populationSize = popSize;
         _mutationRate = mutRate;
         _elitismCount = elite;
         _mapper = mapper;
+        _parentSelectionPercentage = parentSelectionPercentage;
         
+        // Calculate how many of the top individuals are eligible for breeding
+        _breedablePoolSize = Math.Max(elite + 1, (int)(_populationSize * parentSelectionPercentage));
 
         _genomeLength = mapper.GenomeLength; 
         _population = new Genome[_populationSize];
@@ -123,11 +128,12 @@ public class GeneticAlgorithm
     private Genome SelectParentTournament()
     {
         int tournamentSize = 3;
-        Genome best = _population[Random.Shared.Next(0, _populationSize)];
+        // Select randomly from the top parentSelectionPercentage of the population
+        Genome best = _population[Random.Shared.Next(0, _breedablePoolSize)];
 
         for (int i = 1; i < tournamentSize; i++)
         {
-            Genome contender = _population[Random.Shared.Next(0, _populationSize)];
+            Genome contender = _population[Random.Shared.Next(0, _breedablePoolSize)];
             if (contender.Fitness > best.Fitness)
             {
                 best = contender;
