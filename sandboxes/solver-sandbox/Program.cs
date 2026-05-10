@@ -8,9 +8,9 @@ Console.WriteLine("==================================================");
 // 1. Generate Dummy Data (Using the generator we built earlier)
 var gen = new TimetableDataGenerator(seed: 1337);
 
-var groups = gen.GenerateStudentGroups(20);
-var courses = gen.GenerateCourses(60, groups);
-var instructors = gen.GenerateInstructors(30);
+var groups = gen.GenerateStudentGroups(10);     
+var courses = gen.GenerateCourses(60, groups); 
+var instructors = gen.GenerateInstructors(30); 
 var rooms = gen.GenerateRooms(50);
 
 var mapper = new TimetableMapper(courses, instructors, rooms, 10, 5); // 10 slots/day, 5 days
@@ -18,18 +18,19 @@ var mapper = new TimetableMapper(courses, instructors, rooms, 10, 5); // 10 slot
 // ==========================================
 // PLAYGROUND VARIABLES 
 // ==========================================
-int popSize = 500;
-float mutRate = 0.08f;
-int elitism = 5;
-int maxGenerations = 20000;
-float parentPercentage = 0.7f;
+int popSize = 1000;            // Drastically reduced. Faster loops!
+float mutRate = 0.05f;         // 5% is the sweet spot for targeted bitmask mutation.
+int elitism = 50;              // Protect the top 5% of schedules from death.
+int immigrationCount = 60;     // A 5% trickle of fresh blood to prevent stagnation.
+float parentPercentage = 0.7f; // Top 70% breed, bottom 30% are replaced.
+int maxGenerations = 10000;
 // ==========================================
 
 Console.WriteLine($"Courses: {courses.Count} | Population: {popSize} | Mutation: {mutRate:P1}");
 Console.WriteLine("Gen\tBest Fit\tTime (ms)");
 Console.WriteLine("--------------------------------------------------");
 
-var ga = new GeneticAlgorithm(popSize, mutRate, elitism, mapper);
+var ga = new GeneticAlgorithm(popSize, mutRate, elitism, mapper, immigrationCount, parentPercentage);
 var stopwatch = Stopwatch.StartNew();
 
 // Run the loop
@@ -42,13 +43,15 @@ for (int i = 1; i <= maxGenerations; i++)
     long stepTime = stopwatch.ElapsedMilliseconds - startMs;
 
     // Print progress every 10 generations
-    if (i % 10 == 0 || i == 1)
+    if (i % 1 == 0 || i == 1)
     {
 
         float bestFitness = ga.GetBestFitness(); 
+        float averageFitness = ga.GetAverageFitness();
+        float worstFitness = ga.GetWorstFitness();
         
         Console.ForegroundColor = bestFitness > 90 ? ConsoleColor.Green : ConsoleColor.Yellow;
-        Console.WriteLine($"{i}\t{bestFitness:F2}\t\t{stepTime}ms");
+        Console.WriteLine($"{i}\t{bestFitness:F2}\t{averageFitness:F2}\t{worstFitness:F2}\t{stepTime}ms");
         Console.ResetColor();
     }
 }
