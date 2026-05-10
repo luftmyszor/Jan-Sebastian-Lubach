@@ -12,22 +12,28 @@ public class GeneticAlgorithm
     private readonly int _genomeLength;
     private readonly float _mutationRate;
     private readonly int _elitismCount;
+    private readonly TimetableMapper _mapper;
 
-    public GeneticAlgorithm(int populationSize, int genomeLength, float mutationRate, int elitismCount)
+    // Pass the mapper into the GA constructor
+    public GeneticAlgorithm(int popSize, float mutRate, int elite, TimetableMapper mapper)
     {
-        _populationSize = populationSize;
-        _genomeLength = genomeLength;
-        _mutationRate = mutationRate;
-        _elitismCount = elitismCount;
+        _populationSize = popSize;
+        _mutationRate = mutRate;
+        _elitismCount = elite;
+        _mapper = mapper;
         
+
+        _genomeLength = mapper.GenomeLength; 
         _population = new Genome[_populationSize];
-        _evaluator = new FitnessEvaluator();
+        _evaluator = new FitnessEvaluator(mapper); 
+        InitializePopulation();
     }
+
+    
 
     // --- MAIN LOOP ---
     public void Run(int generations)
     {
-        InitializePopulation();
 
         for (int generation = 0; generation < generations; generation++)
         {
@@ -50,16 +56,13 @@ public class GeneticAlgorithm
     {
         for (int i = 0; i < _populationSize; i++)
         {
-            // Rent an array from the pool
-            int[] newGenes = ArrayPool<int>.Shared.Rent(_genomeLength);
+            Genome seed = _mapper.CreateSmartSeedGenome(Random.Shared);
             
-            for (int j = 0; j < _genomeLength; j++)
-            {
-                // Generate a random packed integer (dummy seed)
-                newGenes[j] = Random.Shared.Next(1000, 9999); 
-            }
+            int[] rentedGenes = ArrayPool<int>.Shared.Rent(_genomeLength);
             
-            _population[i] = new Genome(newGenes);
+            seed.Genes.CopyTo(rentedGenes, 0);
+            
+            _population[i] = new Genome(rentedGenes);
         }
     }
 
@@ -166,5 +169,38 @@ public class GeneticAlgorithm
                 child.IsEvaluated = false; 
             }
         }
+    }
+    /// <summary>
+    /// Returns the highest fitness score in the current population.
+    /// </summary>
+    public float GetBestFitness()
+    {
+        return _population[0].Fitness;
+    }
+
+    /// <summary>
+    /// Returns the average fitness score of the current population.
+    /// </summary>
+    public float GetAverageFitness()
+    {
+        float totalFitness = 0;
+        for (int i = 0; i < _populationSize; i++)
+        {
+            totalFitness += _population[i].Fitness;
+        }
+        return totalFitness / _populationSize;
+    }
+
+    /// <summary>
+    /// Runs a single generation cycle. 
+    /// This replaces the internal 'for' loop in the Run() method so you can control it externally.
+    /// </summary>
+    public void StepGeneration()
+    {
+        EvaluatePopulation();
+        
+        SortPopulationByFitness();
+        
+        CreateNextGeneration(); 
     }
 }
