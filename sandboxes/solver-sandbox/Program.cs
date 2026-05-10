@@ -18,18 +18,19 @@ var mapper = new TimetableMapper(courses, instructors, rooms, 10, 5); // 10 slot
 // ==========================================
 // PLAYGROUND VARIABLES 
 // ==========================================
-int popSize = 500;
+int popSize = 20000;
 float mutRate = 0.08f;
-int elitism = 5;
-int maxGenerations = 20000;
-float parentPercentage = 0.7f;
+int elitism = 200;
+int immigrationCount = 6000; //Keep at 20-30%
+float parentPercentage = 0.8f;
+int maxGenerations = 100000;
 // ==========================================
 
 Console.WriteLine($"Courses: {courses.Count} | Population: {popSize} | Mutation: {mutRate:P1}");
 Console.WriteLine("Gen\tBest Fit\tTime (ms)");
 Console.WriteLine("--------------------------------------------------");
 
-var ga = new GeneticAlgorithm(popSize, mutRate, elitism, mapper);
+var ga = new GeneticAlgorithm(popSize, mutRate, elitism, mapper, immigrationCount, parentPercentage);
 var stopwatch = Stopwatch.StartNew();
 
 // Run the loop
@@ -42,13 +43,15 @@ for (int i = 1; i <= maxGenerations; i++)
     long stepTime = stopwatch.ElapsedMilliseconds - startMs;
 
     // Print progress every 10 generations
-    if (i % 10 == 0 || i == 1)
+    if (i % 30 == 0 || i == 1)
     {
 
         float bestFitness = ga.GetBestFitness(); 
+        float averageFitness = ga.GetAverageFitness();
+        float worstFitness = ga.GetWorstFitness();
         
         Console.ForegroundColor = bestFitness > 90 ? ConsoleColor.Green : ConsoleColor.Yellow;
-        Console.WriteLine($"{i}\t{bestFitness:F2}\t\t{stepTime}ms");
+        Console.WriteLine($"{i}\t{bestFitness:F2}\t{averageFitness:F2}\t{worstFitness:F2}\t{stepTime}ms");
         Console.ResetColor();
     }
 }

@@ -92,7 +92,7 @@ public class FitnessEvaluator
                 CourseIndex = i, Course = course, 
                 T = t, R = r, S = s, 
                 GroupIndex = groupIndex,
-                OccupiedSlots = occupiedSlots 
+
             });
         }
         return schedule;
@@ -103,54 +103,59 @@ public class FitnessEvaluator
     private int CheckH1_TeacherSingleBooked(List<DecodedGene> schedule)
     {
         int violations = 0;
+        
+        // Use an array to track booked slots per teacher instead of HashSets and GroupBys
+        // Size = Total Teachers * Total Slots
         int[] teacherBookingMatrix = ArrayPool<int>.Shared.Rent(_mapper.T_max * _mapper.S_max);
         Array.Clear(teacherBookingMatrix, 0, teacherBookingMatrix.Length);
 
         foreach (var gene in schedule)
         {
-            foreach (var slot in gene.OccupiedSlots)
+            // Loop from the Start Slot (S) for the duration of the course
+            for(int offset = 0; offset < gene.Course.RequiredSlots; offset++)
             {
-                int index = (gene.T * _mapper.S_max) + slot;
-
-                if (teacherBookingMatrix[index] == 1)
+                int currentSlot = gene.S + offset;
+                
+                // 1D array indexing simulating a 2D grid [Teacher, Slot]
+                int index = (gene.T * _mapper.S_max) + currentSlot;
+                
+                if (teacherBookingMatrix[index] == 1) 
                 {
-                    violations++;
+                    violations++; // Teacher is in two places at once!
                 }
-
-                teacherBookingMatrix[index] = 1;
+                teacherBookingMatrix[index] = 1; // Mark as booked
             }
         }
-
+        
         ArrayPool<int>.Shared.Return(teacherBookingMatrix);
         return violations;
     }
 
     private int CheckH2_RoomSingleBooked(List<DecodedGene> schedule)
-{
-    int violations = 0;
-    // Create an array tracking slots. Size = Total Rooms * Total Slots.
-    // e.g., 50 rooms * 50 slots = 2500 integers. ArrayPool is perfect here!
-    int[] roomBookingMatrix = ArrayPool<int>.Shared.Rent(_mapper.R_max * _mapper.S_max);
-    Array.Clear(roomBookingMatrix, 0, roomBookingMatrix.Length);
-
-    foreach (var gene in schedule)
     {
-        foreach (var slot in gene.OccupiedSlots)
+        int violations = 0;
+        int[] roomBookingMatrix = ArrayPool<int>.Shared.Rent(_mapper.R_max * _mapper.S_max);
+        Array.Clear(roomBookingMatrix, 0, roomBookingMatrix.Length);
+
+        foreach (var gene in schedule)
         {
-            // 1D array indexing simulating a 2D grid [Room, Slot]
-            int index = (gene.R * _mapper.S_max) + slot;
-            
-            if (roomBookingMatrix[index] == 1) 
+            // The Zero-Allocation Loop!
+            for (int offset = 0; offset < gene.Course.RequiredSlots; offset++)
             {
-                violations++; // Already booked!
+                int currentSlot = gene.S + offset;
+                int index = (gene.R * _mapper.S_max) + currentSlot;
+                
+                if (roomBookingMatrix[index] == 1) 
+                {
+                    violations++; // Room is double-booked!
+                }
+                roomBookingMatrix[index] = 1; 
             }
-            roomBookingMatrix[index] = 1; // Mark as booked
         }
+        
+        ArrayPool<int>.Shared.Return(roomBookingMatrix);
+        return violations;
     }
-    
-    ArrayPool<int>.Shared.Return(roomBookingMatrix);
-    return violations;
-}
 
     private int CheckH3_RoomCapacity(List<DecodedGene> schedule)
     {
@@ -200,13 +205,16 @@ public class FitnessEvaluator
         foreach (var gene in schedule)
         {
             var teacher = _mapper.Instructors[gene.T];
+            
             // The teacher MUST be available for EVERY slot the course requires
-            foreach (var slot in gene.OccupiedSlots)
+            for (int offset = 0; offset < gene.Course.RequiredSlots; offset++)
             {
-                if (!teacher.AvailableSlots.Contains(slot))
+                int currentSlot = gene.S + offset;
+                
+                if (!teacher.AvailableSlots.Contains(currentSlot))
                 {
                     violations++;
-                    break;
+                    break; // One broken slot ruins the whole class placement
                 }
             }
         }
@@ -216,21 +224,21 @@ public class FitnessEvaluator
     private int CheckH7_StudentGroupSingleBooked(List<DecodedGene> schedule)
     {
         int violations = 0;
-
         int[] groupBookingMatrix = ArrayPool<int>.Shared.Rent(_mapper.GroupCount * _mapper.S_max);
         Array.Clear(groupBookingMatrix, 0, groupBookingMatrix.Length);
 
         foreach (var gene in schedule)
         {
-            foreach (var slot in gene.OccupiedSlots)
+            // The Zero-Allocation Loop!
+            for (int offset = 0; offset < gene.Course.RequiredSlots; offset++)
             {
-                int index = (gene.GroupIndex * _mapper.S_max) + slot;
+                int currentSlot = gene.S + offset;
+                int index = (gene.GroupIndex * _mapper.S_max) + currentSlot;
 
                 if (groupBookingMatrix[index] == 1)
                 {
-                    violations++;
+                    violations++; // Students are in two places at once!
                 }
-
                 groupBookingMatrix[index] = 1;
             }
         }
@@ -248,6 +256,5 @@ public class FitnessEvaluator
         public int R;
         public int S;
         public int GroupIndex;
-        public List<int> OccupiedSlots;
     }
 }

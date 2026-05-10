@@ -15,15 +15,17 @@ public class GeneticAlgorithm
     private readonly float _parentSelectionPercentage;
     private readonly int _breedablePoolSize;
     private readonly TimetableMapper _mapper;
+    private readonly int _immigrationCount;
 
     // Pass the mapper into the GA constructor
-    public GeneticAlgorithm(int popSize, float mutRate, int elite, TimetableMapper mapper, float parentSelectionPercentage = 0.3f)
+    public GeneticAlgorithm(int popSize, float mutRate, int elite, TimetableMapper mapper, int immigrationCount = 50, float parentSelectionPercentage = 0.3f)
     {
         _populationSize = popSize;
         _mutationRate = mutRate;
         _elitismCount = elite;
         _mapper = mapper;
         _parentSelectionPercentage = parentSelectionPercentage;
+        _immigrationCount = immigrationCount;
         
         // Calculate how many of the top individuals are eligible for breeding
         _breedablePoolSize = Math.Max(elite + 1, (int)(_populationSize * parentSelectionPercentage));
@@ -103,7 +105,8 @@ public class GeneticAlgorithm
         }
 
         // 4B. Breed the rest of the population
-        for (int i = _elitismCount; i < _populationSize; i++)
+        int breedLimit = _populationSize - _immigrationCount;
+        for (int i = _elitismCount; i < breedLimit; i++)
         {
             Genome parentA = SelectParentTournament();
             Genome parentB = SelectParentTournament();
@@ -112,6 +115,20 @@ public class GeneticAlgorithm
             Mutate(ref child);
 
             nextGeneration[i] = child;
+        }
+
+        // 4C. IMMIGRATION: Inject fresh, smart seeds to replace the bottom
+        for (int i = breedLimit; i < _populationSize; i++)
+        {
+            // 1. Generate a mathematically valid smart seed
+            Genome freshSeed = _mapper.CreateSmartSeedGenome(Random.Shared);
+            
+            // 2. Rent an array for it (keeping our Memory Pool architecture intact)
+            int[] rentedGenes = ArrayPool<int>.Shared.Rent(_genomeLength);
+            freshSeed.Genes.CopyTo(rentedGenes, 0);
+            
+            // 3. Add to the new generation
+            nextGeneration[i] = new Genome(rentedGenes);
         }
 
         // 4C. Memory Cleanup: Return old, unused arrays to the pool
@@ -127,7 +144,7 @@ public class GeneticAlgorithm
     // --- STEP 5: SELECTION ---
     private Genome SelectParentTournament()
     {
-        int tournamentSize = 3;
+        int tournamentSize = 5;
         // Select randomly from the top parentSelectionPercentage of the population
         Genome best = _population[Random.Shared.Next(0, _breedablePoolSize)];
 
@@ -145,18 +162,20 @@ public class GeneticAlgorithm
     // --- STEP 6: CROSSOVER ---
     private Genome Crossover(Genome parentA, Genome parentB)
     {
-        // Rent a brand new array for the child
         int[] childGenes = ArrayPool<int>.Shared.Rent(_genomeLength);
         
-        int splitPoint = _genomeLength / 2;
-
-        // Zero-allocation memory slicing using Span<T>
-        Span<int> spanA = parentA.Genes.AsSpan();
-        Span<int> spanB = parentB.Genes.AsSpan();
-        Span<int> childSpan = childGenes.AsSpan();
-
-        spanA.Slice(0, splitPoint).CopyTo(childSpan.Slice(0, splitPoint));
-        spanB.Slice(splitPoint, _genomeLength - splitPoint).CopyTo(childSpan.Slice(splitPoint, _genomeLength - splitPoint));
+        for (int i = 0; i < _genomeLength; i++)
+        {
+            // 50/50 chance to take the gene from Parent A or Parent B
+            if (Random.Shared.NextDouble() < 0.5)
+            {
+                childGenes[i] = parentA.Genes[i];
+            }
+            else
+            {
+                childGenes[i] = parentB.Genes[i];
+            }
+        }
 
         return new Genome(childGenes);
     }
@@ -176,25 +195,37 @@ public class GeneticAlgorithm
             }
         }
     }
-    /// <summary>
-    /// Returns the highest fitness score in the current population.
-    /// </summary>
+
     public float GetBestFitness()
     {
         return _population[0].Fitness;
     }
 
-    /// <summary>
-    /// Returns the average fitness score of the current population.
-    /// </summary>
+    public float GetWorstFitness()
+    {
+        // Find the actual worst evaluated fitness (avoid unevaluated Fitness=0 placeholders)
+        for (int i = _populationSize - 1; i >= 0; i--)
+        {
+            if (_population[i].IsEvaluated)
+            {
+                return _population[i].Fitness;
+            }
+        }
+        return 0f; // No evaluated individuals (shouldn't happen)
+    }
     public float GetAverageFitness()
     {
         float totalFitness = 0;
+        int evaluatedCount = 0;
         for (int i = 0; i < _populationSize; i++)
         {
-            totalFitness += _population[i].Fitness;
+            if (_population[i].IsEvaluated)
+            {
+                totalFitness += _population[i].Fitness;
+                evaluatedCount++;
+            }
         }
-        return totalFitness / _populationSize;
+        return evaluatedCount > 0 ? totalFitness / evaluatedCount : 0f;
     }
 
     /// <summary>
