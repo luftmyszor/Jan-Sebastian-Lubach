@@ -42,8 +42,8 @@ public class TimetableDataGenerator
             {
                 Id = $"G{i:D2}",
                 Name = $"Grupa IS-{i}",
-                Year = _rand.Next(1, 6),       // Years 1 to 5
-                Students = _rand.Next(15, 31)  // 15 to 30 students per group
+                Year = _rand.Next(1, 6),       
+                Students = _rand.Next(12, 20)  
             });
         }
 
@@ -86,11 +86,11 @@ public class TimetableDataGenerator
             
             int capacity = roomType switch
             {
-                "lecture_hall" => _rand.Next(50, 201), 
-                "computer_lab" => _rand.Next(16, 31),  
-                "hardware_lab" => _rand.Next(12, 21),  
-                "exercise_room" => _rand.Next(20, 31), 
-                _ => 30
+                "lecture_hall" => _rand.Next(45, 201),
+                "computer_lab" => _rand.Next(16, 31),
+                "hardware_lab" => _rand.Next(12, 21),
+                "exercise_room" => _rand.Next(18, 31),
+                _ => 50
             };
 
             var room = new Room

@@ -114,20 +114,37 @@ public class TimetableMapper
     {
         var course = Courses[courseIndex];
 
-        // 1. Pick a valid Teacher (T)
-        var validTeachers = _instructorsBySubject[course.SubjectId];
-        int t = validTeachers[rand.Next(validTeachers.Count)];
+        // 1. ONLY pick teachers who are actually qualified to teach this subject
+        var qualifiedTeachers = Instructors
+            .Select((teacher, index) => new { teacher, index })
+            .Where(x => x.teacher.Subjects.Contains(course.SubjectId))
+            .Select(x => x.index)
+            .ToList();
 
-        // 2. Pick a valid Room (R)
-        var validRooms = _roomsByType[course.RequiredRoomType];
+        // 2. ONLY pick rooms that are the right TYPE and BIG ENOUGH
+        var validRooms = Rooms
+            .Select((room, index) => new { room, index })
+            .Where(x => x.room.Type == course.RequiredRoomType && x.room.Capacity >= course.Students)
+            .Select(x => x.index)
+            .ToList();
+
+        // Safety check: Is the problem actually unsolvable?
+        if (validRooms.Count == 0)
+        {
+            throw new Exception($"UNSOLVABLE! No room exists of type {course.RequiredRoomType} with capacity >= {course.Students} for course {course.Name}");
+        }
+        if (qualifiedTeachers.Count == 0)
+        {
+            throw new Exception($"UNSOLVABLE! No teacher is qualified to teach {course.SubjectId}");
+        }
+
+        // 3. Pick randomly ONLY from the valid lists!
+        int t = qualifiedTeachers[rand.Next(qualifiedTeachers.Count)];
         int r = validRooms[rand.Next(validRooms.Count)];
-
-        // 3. Pick a random Start Slot (S)
-        // Prevent the course from overflowing past the end of the day.
-        int day = rand.Next(0, Days);
-        int maxStartInDay = SlotsPerDay - course.RequiredSlots; // Prevent overflow
-        int sInDay = rand.Next(0, maxStartInDay + 1);
-        int s = (day * SlotsPerDay) + sInDay;
+        
+        // 4. Slots can still be anywhere (for now)
+        int maxStartSlot = S_max - course.RequiredSlots;
+        int s = rand.Next(0, maxStartSlot + 1);
 
         return Encode(t, r, s);
     }

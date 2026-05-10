@@ -76,12 +76,15 @@ public class GeneticAlgorithm
     // --- STEP 2: EVALUATION ---
     private void EvaluatePopulation()
     {
-        // Run fitness evaluation on all CPU cores simultaneously
         Parallel.For(0, _populationSize, i =>
         {
             if (!_population[i].IsEvaluated)
             {
-                _population[i].Fitness = _evaluator.Evaluate(_population[i].Genes);
+                // result now holds BOTH .Fitness and .Mask
+                var result = _evaluator.Evaluate(_population[i].Genes);
+                
+                _population[i].Fitness = result.Fitness;
+                _population[i].BrokenGenesMask = result.Mask; // Save the mask!
                 _population[i].IsEvaluated = true;
             }
         });
@@ -185,12 +188,15 @@ public class GeneticAlgorithm
     {
         for (int i = 0; i < _genomeLength; i++)
         {
-            if (Random.Shared.NextDouble() < _mutationRate)
+            // Is this specific course's bit flipped to 1?
+            bool isBroken = (child.BrokenGenesMask & (1UL << i)) != 0;
+
+            // 50% chance to mutate if broken, 1% if it's fine
+            float effectiveMutationRate = isBroken ? 0.50f : _mutationRate;
+
+            if (Random.Shared.NextDouble() < effectiveMutationRate)
             {
-                // TODO change bounds
-                child.Genes[i] = Random.Shared.Next(1000, 9999); 
-                
-                // If mutated, we must re-evaluate it next round
+                child.Genes[i] = _mapper.CreateSingleValidGene(i, Random.Shared);
                 child.IsEvaluated = false; 
             }
         }
