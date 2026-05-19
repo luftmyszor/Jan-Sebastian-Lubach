@@ -27,7 +27,11 @@ public class FitnessEvaluator
     private readonly TimetableMapper _mapper;
     
     // Weight of penalty per violation. ly.
-    private const float HARD_PENALTY = -1f; 
+    private const float HARD_PENALTY = -1f;
+
+    // Values for soft constraints
+    private const int DAYS_PER_WEEK = 5;
+    private const int LATE_START_THRESHOLD = 6;
 
     public FitnessEvaluator(TimetableMapper mapper)
     {
@@ -263,15 +267,153 @@ public class FitnessEvaluator
         return violations;
     }
 
+    // ---  SOFT CONSTRAINT FUNCTIONS ---
+
+    private float EvaluateS1_TeacherPreferences(List<DecodedGene> schedule)
+    {
+        int hits = 0;
+        int total = 0;
+
+        foreach (var gene in schedule)
+        {
+            var teacher = _mapper.Instructors[gene.T];
+
+            if (teacher.PreferredSlots == null || teacher.PreferredSlots.Count == 0)
+            {
+                // No preferences declared => treat every slot as preferred
+                total += gene.Course.RequiredSlots;
+                hits += gene.Course.RequiredSlots;
+                continue;
+            }
+
+            for (int offset = 0; offset < gene.Course.RequiredSlots; offset++)
+            {
+                int slot = gene.S + offset;
+                total++;
+                if (teacher.PreferredSlots.Contains(slot))
+                    hits++;
+            }
+        }
+
+        return total == 0 ? 1f : (float)hits / total;
+    }
+
+    private float EvaluateS2_StudentGaps(List<DecodedGene> schedule)
+    {
+        int slotsPerDay = _mapper.S_max / DAYS_PER_WEEK;
+        if (slotsPerDay < 1) return 1f;
+
+        // Track (earliest slot, latest slot, occupied count) per (group, day)
+        var daySpans = new Dictionary<(int group, int day), (int min, int max, int count)>();
+
+        foreach (var gene in schedule)
+        {
+            for (int offset = 0; offset < gene.Course.RequiredSlots; offset++)
+            {
+                int slot = gene.S + offset;
+                int day = slot / slotsPerDay;
+                var key = (gene.GroupIndex, day);
+
+                if (daySpans.TryGetValue(key, out var cur))
+                    daySpans[key] = (Math.Min(cur.min, slot), Math.Max(cur.max, slot), cur.count + 1);
+                else
+                    daySpans[key] = (slot, slot, 1);
+            }
+        }
+
+        int totalGaps = 0;
+        int maxPossible = 0;
+
+        foreach (var kv in daySpans)
+        {
+            var (min, max, count) = kv.Value;
+            int span = max - min + 1;
+            totalGaps += span - count;  // Idle slots within the span
+            maxPossible += Math.Max(0, slotsPerDay - 2);    // Realistic worst case per group-day
+        }
+
+        if (maxPossible == 0) return 1f;
+        return 1f - Math.Min(1f, (float)totalGaps / maxPossible);
+    }
+
+    private float EvaluateS3_LateClasses(List<DecodedGene> schedule)
+    {
+        if (schedule.Count == 0) return 1f;
+
+        int slotsPerDay = _mapper.S_max / DAYS_PER_WEEK;
+        int earlyStarts = 0;
+
+        foreach (var gene in schedule)
+        {
+            int slotInDay = slotsPerDay > 0 ? gene.S % slotsPerDay : gene.S;
+            if (slotInDay < LATE_START_THRESHOLD)
+                earlyStarts++;
+        }
+
+        return (float)earlyStarts / schedule.Count;
+    }
+
+    private float EvaluateS4_DailyBalance(List<DecodedGene> schedule)
+    {
+        int slotsPerDay = _mapper.S_max / DAYS_PER_WEEK;
+        if (slotsPerDay < 1) return 1f;
+
+        // Count course starts per (group, day)
+        var dayCounts = new Dictionary<(int group, int day), int>();
+
+        foreach (var gene in schedule)
+        {
+            int day = gene.S / slotsPerDay;
+            var key = (gene.GroupIndex, day);
+            dayCounts[key] = dayCounts.GetValueOrDefault(key, 0) + 1;
+        }
+
+        // Aggregate into per-group daily arrays
+        var byGroup = new Dictionary<int, int[]>();
+
+        foreach (var kv in dayCounts)
+        {
+            int group = kv.Key.group;
+            int day = kv.Key.day;
+
+            if (!byGroup.TryGetValue(group, out int[]? counts))
+            {
+                counts = new int[DAYS_PER_WEEK];
+                byGroup[group] = counts;
+            }
+
+            if (day < DAYS_PER_WEEK)
+                counts[day] += kv.Value;
+        }
+
+        if (byGroup.Count == 0) return 1f;
+
+        float totalCV = 0f;
+
+        foreach (var counts in byGroup.Values)
+        {
+            float mean = counts.Average();
+            if (mean < 0.001f) continue;
+
+            float variance = counts.Average(c => (float)Math.Pow(c - mean, 2));
+            float stddev = (float)Math.Sqrt(variance);
+            float cv = stddev / mean;   // 0 = perfectly balanced
+            totalCV += Math.Min(1f, cv);    // Cap per group so one outlier doesn't dominate
+        }
+
+        float meanCV = totalCV / byGroup.Count;
+        return 1f - meanCV;     // Invert so higher = better
+    }
+
     private float CalculateSoftFitness(List<DecodedGene> schedule)
     {
         // Start with a massive base score so valid schedules always beat invalid ones
-        float score = 1000f; 
+        float score = 1000f;
 
-        // score -= EvaluateS1_TeacherPreferences(schedule) * 0.05f;
-        // score -= EvaluateS2_StudentGaps(schedule) * 0.02f;
-        // score -= EvaluateS3_LateClasses(schedule) * 0.01f;
-        // score -= EvaluateS4_DailyBalance(schedule) * 0.01f;
+        score -= (1f - EvaluateS1_TeacherPreferences(schedule)) * 500f;
+        score -= (1f - EvaluateS2_StudentGaps(schedule)) * 300f;
+        score -= (1f - EvaluateS3_LateClasses(schedule)) * 100f;
+        score -= (1f - EvaluateS4_DailyBalance(schedule)) * 100f;
 
         return score;
     }
