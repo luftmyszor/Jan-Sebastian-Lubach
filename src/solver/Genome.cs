@@ -303,8 +303,19 @@ public class FitnessEvaluator
         int slotsPerDay = _mapper.S_max / DAYS_PER_WEEK;
         if (slotsPerDay < 1) return 1f;
 
-        // Track (earliest slot, latest slot, occupied count) per (group, day)
-        var daySpans = new Dictionary<(int group, int day), (int min, int max, int count)>();
+        // Rent flat arrays instead of allocating dictionaries
+        int size = _mapper.GroupCount * DAYS_PER_WEEK;
+        int[] minSlot = ArrayPool<int>.Shared.Rent(size);
+        int[] maxSlot = ArrayPool<int>.Shared.Rent(size);
+        int[] slotCount = ArrayPool<int>.Shared.Rent(size);
+
+        // Can't use Array.Clear shorthand here
+        for (int i = 0; i < size; i++)
+        {
+            minSlot[i] = int.MaxValue;
+            maxSlot[i] = -1;
+            slotCount[i] = 0;
+        }
 
         foreach (var gene in schedule)
         {
@@ -312,28 +323,35 @@ public class FitnessEvaluator
             {
                 int slot = gene.S + offset;
                 int day = slot / slotsPerDay;
-                var key = (gene.GroupIndex, day);
+                if (day >= DAYS_PER_WEEK)
+                    continue;
+                int index = gene.GroupIndex * DAYS_PER_WEEK + day;
 
-                if (daySpans.TryGetValue(key, out var cur))
-                    daySpans[key] = (Math.Min(cur.min, slot), Math.Max(cur.max, slot), cur.count + 1);
-                else
-                    daySpans[key] = (slot, slot, 1);
+                if (slot < minSlot[index])
+                    minSlot[index] = slot;
+                if (slot > maxSlot[index])
+                    maxSlot[index] = slot;
+                slotCount[index]++;
             }
         }
 
         int totalGaps = 0;
         int maxPossible = 0;
 
-        foreach (var kv in daySpans)
+        for (int i = 0; i < size; i++)
         {
-            var (min, max, count) = kv.Value;
-            int span = max - min + 1;
-            totalGaps += span - count;  // Idle slots within the span
-            maxPossible += Math.Max(0, slotsPerDay - 2);    // Realistic worst case per group-day
+            if (maxSlot[i] == -1)
+                continue;    // No classes this group-day
+            int span = maxSlot[i] - minSlot[i] + 1;
+            totalGaps += span - slotCount[i];
+            maxPossible += Math.Max(0, slotsPerDay - 2);
         }
 
-        if (maxPossible == 0) return 1f;
-        return 1f - Math.Min(1f, (float)totalGaps / maxPossible);
+        ArrayPool<int>.Shared.Return(minSlot);
+        ArrayPool<int>.Shared.Return(maxSlot);
+        ArrayPool<int>.Shared.Return(slotCount);
+
+        return maxPossible == 0 ? 1f : 1f - Math.Min(1f, (float)totalGaps / maxPossible);
     }
 
     private float EvaluateS3_LateClasses(List<DecodedGene> schedule)
@@ -358,51 +376,51 @@ public class FitnessEvaluator
         int slotsPerDay = _mapper.S_max / DAYS_PER_WEEK;
         if (slotsPerDay < 1) return 1f;
 
-        // Count course starts per (group, day)
-        var dayCounts = new Dictionary<(int group, int day), int>();
+        int size = _mapper.GroupCount * DAYS_PER_WEEK;
+        int[] counts = ArrayPool<int>.Shared.Rent(size);
+        Array.Clear(counts, 0, size);
 
         foreach (var gene in schedule)
         {
             int day = gene.S / slotsPerDay;
-            var key = (gene.GroupIndex, day);
-            dayCounts[key] = dayCounts.GetValueOrDefault(key, 0) + 1;
+            if (day >= DAYS_PER_WEEK)
+                continue;
+            counts[gene.GroupIndex * DAYS_PER_WEEK + day]++;
         }
-
-        // Aggregate into per-group daily arrays
-        var byGroup = new Dictionary<int, int[]>();
-
-        foreach (var kv in dayCounts)
-        {
-            int group = kv.Key.group;
-            int day = kv.Key.day;
-
-            if (!byGroup.TryGetValue(group, out int[]? counts))
-            {
-                counts = new int[DAYS_PER_WEEK];
-                byGroup[group] = counts;
-            }
-
-            if (day < DAYS_PER_WEEK)
-                counts[day] += kv.Value;
-        }
-
-        if (byGroup.Count == 0) return 1f;
 
         float totalCV = 0f;
+        int groupsSeen = 0;
 
-        foreach (var counts in byGroup.Values)
+        for (int g = 0; g < _mapper.GroupCount; g++)
         {
-            float mean = counts.Average();
-            if (mean < 0.001f) continue;
+            // Manual mean => no LINQ, no lambda
+            float mean = 0f;
+            for (int d = 0; d < DAYS_PER_WEEK; d++)
+                mean += counts[g * DAYS_PER_WEEK + d];
+            mean /= DAYS_PER_WEEK;
 
-            float variance = counts.Average(c => (float)Math.Pow(c - mean, 2));
-            float stddev = (float)Math.Sqrt(variance);
-            float cv = stddev / mean;   // 0 = perfectly balanced
-            totalCV += Math.Min(1f, cv);    // Cap per group so one outlier doesn't dominate
+            if (mean < 0.001f)
+                continue;
+            groupsSeen++;
+
+            // Manual variance, same reasons
+            float variance = 0f;
+            for (int d = 0; d < DAYS_PER_WEEK; d++)
+            {
+                float diff = counts[g * DAYS_PER_WEEK + d] - mean;
+                variance += diff * diff;
+            }
+            variance /= DAYS_PER_WEEK;
+
+            float cv = (float)Math.Sqrt(variance) / mean;
+            totalCV += Math.Min(1f, cv);
         }
 
-        float meanCV = totalCV / byGroup.Count;
-        return 1f - meanCV;     // Invert so higher = better
+        ArrayPool<int>.Shared.Return(counts);
+
+        if (groupsSeen == 0)
+            return 1f;
+        return 1f - (totalCV / groupsSeen);
     }
 
     private float CalculateSoftFitness(List<DecodedGene> schedule)
