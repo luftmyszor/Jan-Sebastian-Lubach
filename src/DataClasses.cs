@@ -16,6 +16,8 @@ public class Instructor
     
     // We will populate this later by parsing "preferences_text"
     public List<int> AvailableSlots { get; set; } = new List<int>(); 
+    public List<int> PreferredSlots { get; set; } = new List<int>();
+    
     public List<string> Subjects { get; set; } = new List<string>();
     
     public int HoursPerSemester { get; set; } 
