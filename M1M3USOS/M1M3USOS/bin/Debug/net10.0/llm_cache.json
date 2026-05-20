@@ -1,0 +1,127 @@
+{
+  "I01": {
+    "preferred_days": [
+      "Mon",
+      "Tue",
+      "Thu"
+    ],
+    "preferred_hours_start": 8,
+    "preferred_hours_end": 12,
+    "forbidden_slots": [
+      {
+        "day": "Fri",
+        "from": 0,
+        "to": 24
+      },
+      {
+        "day": "Wed",
+        "from": 0,
+        "to": 10
+      }
+    ],
+    "min_start_hour": 8
+  },
+  "I02": {
+    "preferred_days": [
+      "Mon",
+      "Tue",
+      "Wed",
+      "Thu",
+      "Fri"
+    ],
+    "preferred_hours_start": 8,
+    "preferred_hours_end": 16,
+    "forbidden_slots": [
+      {
+        "day": "Fri",
+        "from": 15,
+        "to": 20
+      },
+      {
+        "day": "Wed",
+        "from": 8,
+        "to": 10
+      }
+    ],
+    "min_start_hour": 8
+  },
+  "I03": {
+    "preferred_days": [
+      "Tue",
+      "Thu"
+    ],
+    "preferred_hours_start": 10,
+    "preferred_hours_end": 18,
+    "forbidden_slots": [
+      {
+        "day": "Mon",
+        "from": 8,
+        "to": 12
+      },
+      {
+        "day": "Tue",
+        "from": 8,
+        "to": 10
+      },
+      {
+        "day": "Wed",
+        "from": 10,
+        "to": 14
+      },
+      {
+        "day": "Thu",
+        "from": 8,
+        "to": 10
+      },
+      {
+        "day": "Fri",
+        "from": 14,
+        "to": 20
+      }
+    ],
+    "min_start_hour": 10
+  },
+  "I04": {
+    "preferred_days": [
+      "Mon",
+      "Tue",
+      "Wed"
+    ],
+    "preferred_hours_start": 8,
+    "preferred_hours_end": 14,
+    "forbidden_slots": [
+      {
+        "day": "Thu",
+        "from": 0,
+        "to": 24
+      },
+      {
+        "day": "Fri",
+        "from": 0,
+        "to": 24
+      }
+    ],
+    "min_start_hour": 8
+  },
+  "I05": {
+    "preferred_days": [
+      "Tue",
+      "Thu"
+    ],
+    "preferred_hours_start": 8,
+    "preferred_hours_end": 12,
+    "forbidden_slots": [
+      {
+        "day": "Wed",
+        "from": 8,
+        "to": 11
+      },
+      {
+        "day": "Fri",
+        "from": 13,
+        "to": 20
+      }
+    ],
+    "min_start_hour": 8
+  }
+}
