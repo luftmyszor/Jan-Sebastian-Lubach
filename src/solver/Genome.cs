@@ -27,7 +27,11 @@ public class FitnessEvaluator
     private readonly TimetableMapper _mapper;
     
     // Weight of penalty per violation. ly.
-    private const float HARD_PENALTY = -1f; 
+    private const float HARD_PENALTY = -1f;
+
+    // Values for soft constraints
+    private const int DAYS_PER_WEEK = 5;
+    private const int LATE_START_THRESHOLD = 6;
 
     public FitnessEvaluator(TimetableMapper mapper)
     {
@@ -263,15 +267,171 @@ public class FitnessEvaluator
         return violations;
     }
 
+    // ---  SOFT CONSTRAINT FUNCTIONS ---
+
+    private float EvaluateS1_TeacherPreferences(List<DecodedGene> schedule)
+    {
+        int hits = 0;
+        int total = 0;
+
+        foreach (var gene in schedule)
+        {
+            var teacher = _mapper.Instructors[gene.T];
+
+            if (teacher.PreferredSlots == null || teacher.PreferredSlots.Count == 0)
+            {
+                // No preferences declared => treat every slot as preferred
+                total += gene.Course.RequiredSlots;
+                hits += gene.Course.RequiredSlots;
+                continue;
+            }
+
+            for (int offset = 0; offset < gene.Course.RequiredSlots; offset++)
+            {
+                int slot = gene.S + offset;
+                total++;
+                if (teacher.PreferredSlots.Contains(slot))
+                    hits++;
+            }
+        }
+
+        return total == 0 ? 1f : (float)hits / total;
+    }
+
+    private float EvaluateS2_StudentGaps(List<DecodedGene> schedule)
+    {
+        int slotsPerDay = _mapper.S_max / DAYS_PER_WEEK;
+        if (slotsPerDay < 1) return 1f;
+
+        // Rent flat arrays instead of allocating dictionaries
+        int size = _mapper.GroupCount * DAYS_PER_WEEK;
+        int[] minSlot = ArrayPool<int>.Shared.Rent(size);
+        int[] maxSlot = ArrayPool<int>.Shared.Rent(size);
+        int[] slotCount = ArrayPool<int>.Shared.Rent(size);
+
+        // Can't use Array.Clear shorthand here
+        for (int i = 0; i < size; i++)
+        {
+            minSlot[i] = int.MaxValue;
+            maxSlot[i] = -1;
+            slotCount[i] = 0;
+        }
+
+        foreach (var gene in schedule)
+        {
+            for (int offset = 0; offset < gene.Course.RequiredSlots; offset++)
+            {
+                int slot = gene.S + offset;
+                int day = slot / slotsPerDay;
+                if (day >= DAYS_PER_WEEK)
+                    continue;
+                int index = gene.GroupIndex * DAYS_PER_WEEK + day;
+
+                if (slot < minSlot[index])
+                    minSlot[index] = slot;
+                if (slot > maxSlot[index])
+                    maxSlot[index] = slot;
+                slotCount[index]++;
+            }
+        }
+
+        int totalGaps = 0;
+        int maxPossible = 0;
+
+        for (int i = 0; i < size; i++)
+        {
+            if (maxSlot[i] == -1)
+                continue;    // No classes this group-day
+            int span = maxSlot[i] - minSlot[i] + 1;
+            totalGaps += span - slotCount[i];
+            maxPossible += Math.Max(0, slotsPerDay - 2);
+        }
+
+        ArrayPool<int>.Shared.Return(minSlot);
+        ArrayPool<int>.Shared.Return(maxSlot);
+        ArrayPool<int>.Shared.Return(slotCount);
+
+        return maxPossible == 0 ? 1f : 1f - Math.Min(1f, (float)totalGaps / maxPossible);
+    }
+
+    private float EvaluateS3_LateClasses(List<DecodedGene> schedule)
+    {
+        if (schedule.Count == 0) return 1f;
+
+        int slotsPerDay = _mapper.S_max / DAYS_PER_WEEK;
+        int earlyStarts = 0;
+
+        foreach (var gene in schedule)
+        {
+            int slotInDay = slotsPerDay > 0 ? gene.S % slotsPerDay : gene.S;
+            if (slotInDay < LATE_START_THRESHOLD)
+                earlyStarts++;
+        }
+
+        return (float)earlyStarts / schedule.Count;
+    }
+
+    private float EvaluateS4_DailyBalance(List<DecodedGene> schedule)
+    {
+        int slotsPerDay = _mapper.S_max / DAYS_PER_WEEK;
+        if (slotsPerDay < 1) return 1f;
+
+        int size = _mapper.GroupCount * DAYS_PER_WEEK;
+        int[] counts = ArrayPool<int>.Shared.Rent(size);
+        Array.Clear(counts, 0, size);
+
+        foreach (var gene in schedule)
+        {
+            int day = gene.S / slotsPerDay;
+            if (day >= DAYS_PER_WEEK)
+                continue;
+            counts[gene.GroupIndex * DAYS_PER_WEEK + day]++;
+        }
+
+        float totalCV = 0f;
+        int groupsSeen = 0;
+
+        for (int g = 0; g < _mapper.GroupCount; g++)
+        {
+            // Manual mean => no LINQ, no lambda
+            float mean = 0f;
+            for (int d = 0; d < DAYS_PER_WEEK; d++)
+                mean += counts[g * DAYS_PER_WEEK + d];
+            mean /= DAYS_PER_WEEK;
+
+            if (mean < 0.001f)
+                continue;
+            groupsSeen++;
+
+            // Manual variance, same reasons
+            float variance = 0f;
+            for (int d = 0; d < DAYS_PER_WEEK; d++)
+            {
+                float diff = counts[g * DAYS_PER_WEEK + d] - mean;
+                variance += diff * diff;
+            }
+            variance /= DAYS_PER_WEEK;
+
+            float cv = (float)Math.Sqrt(variance) / mean;
+            totalCV += Math.Min(1f, cv);
+        }
+
+        ArrayPool<int>.Shared.Return(counts);
+
+        if (groupsSeen == 0)
+            return 1f;
+        return 1f - (totalCV / groupsSeen);
+    }
+
     private float CalculateSoftFitness(List<DecodedGene> schedule)
     {
         // Start with a massive base score so valid schedules always beat invalid ones
-        float score = 1000f; 
+        float score = 1000f;
 
-        // score -= EvaluateS1_TeacherPreferences(schedule) * 0.05f;
-        // score -= EvaluateS2_StudentGaps(schedule) * 0.02f;
-        // score -= EvaluateS3_LateClasses(schedule) * 0.01f;
-        // score -= EvaluateS4_DailyBalance(schedule) * 0.01f;
+        score -= (1f - EvaluateS1_TeacherPreferences(schedule)) * 500f;
+        score -= (1f - EvaluateS2_StudentGaps(schedule)) * 300f;
+        score -= (1f - EvaluateS3_LateClasses(schedule)) * 100f;
+        score -= (1f - EvaluateS4_DailyBalance(schedule)) * 100f;
 
         return score;
     }
