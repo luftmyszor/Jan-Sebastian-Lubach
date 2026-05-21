@@ -10,7 +10,9 @@
   <ItemGroup>
     <Compile Remove="sandboxes\**\*.cs" />
     <Compile Remove="Timetable.Tests\**\*.cs" /> 
+    <Compile Remove="M1M3USOS\**\*.cs" />
     <None Remove="Timetable.Tests\**" />
+    <None Remove="M1M3USOS\**" />
   </ItemGroup>
 
   <ItemGroup>
