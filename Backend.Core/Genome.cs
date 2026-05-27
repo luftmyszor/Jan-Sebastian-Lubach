@@ -59,7 +59,7 @@ public class FitnessEvaluator
         if (totalHardViolations == 0)
         {
             float softFitness = CalculateSoftFitness(decodedSchedule);
-            return (softFitness, brokenMask); 
+            return (softFitness, 0); 
         }
 
 

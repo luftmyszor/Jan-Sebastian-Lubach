@@ -1,7 +1,5 @@
 <Solution>
-  <Folder Name="/sandboxes/">
-    <Project Path="sandboxes/solver-sandbox/solver-sandbox.csproj" />
-  </Folder>
+  <Folder Name="/sandboxes/" />
   <Project Path="JSL.csproj" />
   <Project Path="Timetable.Tests/Timetable.Tests.csproj" />
 </Solution>
