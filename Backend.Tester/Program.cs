@@ -35,7 +35,7 @@ class Program
 
         var groups = gen.GenerateStudentGroups(10);     
         var courses = gen.GenerateCourses(50, groups); 
-        var instructors = gen.GenerateInstructors(40); 
+        var instructors = gen.GenerateInstructors(30); 
         var rooms = gen.GenerateRooms(50);
 
         // ==========================================
@@ -61,37 +61,64 @@ class Program
         Console.WriteLine("--------------------------------------------------");
 
         var ga = new GeneticAlgorithm(popSize, mutRate, elitism, mapper, immigrationCount, parentPercentage);
-        var stopwatch = Stopwatch.StartNew();
+var stopwatch = Stopwatch.StartNew();
 
-        for (int i = 1; i <= maxGenerations; i++)
+for (int i = 1; i <= maxGenerations; i++)
+{
+    ga.StepGeneration();
+
+    if (i % 10 == 0 || i == 1)
+    {
+        float bestFitness = ga.GetBestFitness(); 
+        
+        // Output in a specific format for Python to read
+        Console.WriteLine($"PROGRESS|{i}|{bestFitness:F2}");
+        if (bestFitness >= 955.0f) // Adjusted threshold for "perfect" solution based on new scoring
         {
-            long startMs = stopwatch.ElapsedMilliseconds;
-            
-            ga.StepGeneration();
-            
-            long stepTime = stopwatch.ElapsedMilliseconds - startMs;
-
-            if (i % 10 == 0 || i == 1)
-            {
-                float bestFitness = ga.GetBestFitness(); 
-                float averageFitness = ga.GetAverageFitness();
-                float worstFitness = ga.GetWorstFitness();
-                
-                Console.ForegroundColor = bestFitness > 90 ? ConsoleColor.Green : ConsoleColor.Yellow;
-                Console.WriteLine($"{i}\t{bestFitness:F2}\t{averageFitness:F2}\t{worstFitness:F2}\t{stepTime}ms");
-                Console.ResetColor();
-
-                // if (bestFitness >= 99.9f)
-                // {
-                //     Console.WriteLine($"\n[SUCCESS] Perfect solution found at generation {i}!");
-                //     break;
-                // }
-                Console.Out.Flush();
-            }
+            Console.WriteLine($"PERFECT_SOLUTION|{i}|{bestFitness:F2}");
+            break;
         }
-
-        stopwatch.Stop();
-        Console.WriteLine("--------------------------------------------------");
-        Console.WriteLine($"Total GA Time: {stopwatch.ElapsedMilliseconds}ms");
     }
 }
+
+    stopwatch.Stop();
+
+    // --- EXPORT TIMETABLE FOR PYTHON ---
+Console.WriteLine("\n[PHASE 4] Exporting generated schedule...");
+var bestGenes = ga.GetBestGenes();
+var exportedSchedule = new List<object>();
+string[] days = {"Poniedziałek", "Wtorek", "Środa", "Czwartek", "Piątek"};
+
+for (int idx = 0; idx < courses.Count; idx++)
+{
+    var (t, r, s) = mapper.Decode(bestGenes[idx]);
+    var course = courses[idx];
+    var instructor = instructors[t];
+    var room = rooms[r];
+
+    int dayIdx = s / timeConfig.SlotsPerDay;
+    int slotIdx = s % timeConfig.SlotsPerDay;
+    
+    // Fallback safety
+    if(dayIdx >= days.Length) continue;
+
+    var timeSlot = timeConfig.Slots[slotIdx];
+    string timeStr = $"{timeSlot.Start} - {timeSlot.End}";
+
+    // Match the exact dictionary keys the Python GUI needs
+    exportedSchedule.Add(new {
+        klasa = course.GroupId, 
+        wykladowca = instructor.Name,
+        przedmiot = course.Name,
+        typ = course.Type.ToUpper(),
+        dzien = days[dayIdx],
+        godzina = timeStr,
+        sala = room.Name
+    });
+}
+
+// Save to file
+string outputPath = "generated_timetable.json";
+System.IO.File.WriteAllText(outputPath, System.Text.Json.JsonSerializer.Serialize(exportedSchedule));
+Console.WriteLine($"DONE|{outputPath}");
+}}

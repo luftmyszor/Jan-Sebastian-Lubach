@@ -17,6 +17,11 @@ public class GeneticAlgorithm
     private readonly TimetableMapper _mapper;
     private readonly int _immigrationCount;
 
+    public int[] GetBestGenes()
+    {
+        return _population[0].Genes;
+    }
+
     // Pass the mapper into the GA constructor
     public GeneticAlgorithm(int popSize, float mutRate, int elite, TimetableMapper mapper, int immigrationCount = 50, float parentSelectionPercentage = 0.3f)
     {

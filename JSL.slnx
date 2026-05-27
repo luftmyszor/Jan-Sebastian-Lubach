@@ -1,5 +1,0 @@
-<Solution>
-  <Folder Name="/sandboxes/" />
-  <Project Path="JSL.csproj" />
-  <Project Path="Timetable.Tests/Timetable.Tests.csproj" />
-</Solution>

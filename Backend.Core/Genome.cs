@@ -52,9 +52,11 @@ public class FitnessEvaluator
         int h5_violations = CheckH5_RoomTypeCorrect(decodedSchedule, ref brokenMask);
         int h6_violations = CheckH6_TeacherAvailable(decodedSchedule, ref brokenMask);
         int h7_violations = CheckH7_StudentGroupSingleBooked(decodedSchedule, ref brokenMask);
+        int h8_violations = CheckH8_TeacherMaxHours(decodedSchedule, ref brokenMask);
 
         int totalHardViolations = h1_violations + h2_violations + h3_violations + 
-                                  h4_violations + h5_violations + h6_violations + h7_violations;
+                                  h4_violations + h5_violations + h6_violations + 
+                                  h7_violations + h8_violations;
 
         if (totalHardViolations == 0)
         {
@@ -267,6 +269,41 @@ public class FitnessEvaluator
         return violations;
     }
 
+    private int CheckH8_TeacherMaxHours(List<DecodedGene> schedule, ref ulong brokenMask)
+    {
+        int violations = 0;
+        
+        // Rent an array to track accumulated hours for each teacher
+        int[] teacherAssignedHours = ArrayPool<int>.Shared.Rent(_mapper.T_max);
+        Array.Clear(teacherAssignedHours, 0, _mapper.T_max);
+
+        // Step 1: Sum up the hours assigned to each teacher
+        foreach (var gene in schedule)
+        {
+            teacherAssignedHours[gene.T] += gene.Course.HoursPerSemester;
+        }
+
+        // Step 2: Check if any teacher exceeded their limit
+        for (int t = 0; t < _mapper.T_max; t++)
+        {
+            if (teacherAssignedHours[t] > _mapper.Instructors[t].HoursPerSemester)
+            {
+                violations++;
+
+                // Flag ALL courses assigned to this overloaded teacher so the GA knows to mutate them
+                foreach (var gene in schedule)
+                {
+                    if (gene.T == t)
+                    {
+                        brokenMask |= (1UL << gene.CourseIndex);
+                    }
+                }
+            }
+        }
+
+        ArrayPool<int>.Shared.Return(teacherAssignedHours);
+        return violations;
+    }
     // ---  SOFT CONSTRAINT FUNCTIONS ---
 
     private float EvaluateS1_TeacherPreferences(List<DecodedGene> schedule)
