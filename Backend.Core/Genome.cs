@@ -5,19 +5,46 @@ using System.Linq;
 using System.Threading.Tasks;
 
 
-public record struct Genome
+public class Genome 
 {
     public int[] Genes;
     public float Fitness;
     public bool IsEvaluated;
-    public ulong BrokenGenesMask;
+    
+    // NEW: The reusable bitmask
+    public ulong[] BrokenGenesMask;
 
+    // Construct from a rented (or owned) array of genes
     public Genome(int[] genes)
     {
         Genes = genes;
         Fitness = 0f;
         IsEvaluated = false;
-        BrokenGenesMask = 0;
+
+        // Allocate the mask ONCE based on how many courses (genes) we have
+        int numCourses = genes?.Length ?? 0;
+        BrokenGenesMask = new ulong[(numCourses + 63) / 64];
+    }
+
+    // Alternative constructor for ArrayPool usage (length + total courses)
+    public Genome(int length, int numCourses)
+    {
+        Genes = System.Buffers.ArrayPool<int>.Shared.Rent(length);
+        Fitness = 0f;
+        IsEvaluated = false;
+
+        BrokenGenesMask = new ulong[(numCourses + 63) / 64];
+    }
+
+    // High-performance Bitwise Helpers
+    public void SetBroken(int courseIndex) 
+    { 
+        BrokenGenesMask[courseIndex >> 6] |= (1UL << (courseIndex & 63)); 
+    }
+
+    public bool IsBroken(int courseIndex) 
+    { 
+        return (BrokenGenesMask[courseIndex >> 6] & (1UL << (courseIndex & 63))) != 0; 
     }
 }
 
@@ -38,21 +65,22 @@ public class FitnessEvaluator
         _mapper = mapper;
     }
     
-    public (float Fitness, ulong Mask) Evaluate(int[] genes)
+    public float Evaluate(Genome genome)
     {
-        var decodedSchedule = DecodeGenome(genes);
+        // Clear the pre-allocated mask provided on the genome to avoid allocations
+        if (genome.BrokenGenesMask != null)
+            Array.Clear(genome.BrokenGenesMask, 0, genome.BrokenGenesMask.Length);
 
-        // Create the empty mask right at the start
-        ulong brokenMask = 0; 
+        var decodedSchedule = DecodeGenome(genome.Genes);
 
-        int h1_violations = CheckH1_TeacherSingleBooked(decodedSchedule, ref brokenMask);
-        int h2_violations = CheckH2_RoomSingleBooked(decodedSchedule, ref brokenMask);
-        int h3_violations = CheckH3_RoomCapacity(decodedSchedule, ref brokenMask);
-        int h4_violations = CheckH4_TeacherQualified(decodedSchedule, ref brokenMask);
-        int h5_violations = CheckH5_RoomTypeCorrect(decodedSchedule, ref brokenMask);
-        int h6_violations = CheckH6_TeacherAvailable(decodedSchedule, ref brokenMask);
-        int h7_violations = CheckH7_StudentGroupSingleBooked(decodedSchedule, ref brokenMask);
-        int h8_violations = CheckH8_TeacherMaxHours(decodedSchedule, ref brokenMask);
+        int h1_violations = CheckH1_TeacherSingleBooked(decodedSchedule, genome);
+        int h2_violations = CheckH2_RoomSingleBooked(decodedSchedule, genome);
+        int h3_violations = CheckH3_RoomCapacity(decodedSchedule, genome);
+        int h4_violations = CheckH4_TeacherQualified(decodedSchedule, genome);
+        int h5_violations = CheckH5_RoomTypeCorrect(decodedSchedule, genome);
+        int h6_violations = CheckH6_TeacherAvailable(decodedSchedule, genome);
+        int h7_violations = CheckH7_StudentGroupSingleBooked(decodedSchedule, genome);
+        int h8_violations = CheckH8_TeacherMaxHours(decodedSchedule, genome);
 
         int totalHardViolations = h1_violations + h2_violations + h3_violations + 
                                   h4_violations + h5_violations + h6_violations + 
@@ -61,13 +89,12 @@ public class FitnessEvaluator
         if (totalHardViolations == 0)
         {
             float softFitness = CalculateSoftFitness(decodedSchedule);
-            return (softFitness, 0); 
+            return softFitness;
         }
-
 
         float finalFitness = (totalHardViolations * HARD_PENALTY);
 
-        return (finalFitness, brokenMask);
+        return finalFitness;
     }
 
     // --- DECODER HELPER ---
@@ -103,7 +130,7 @@ public class FitnessEvaluator
 
     // --- HARD CONSTRAINT FUNCTIONS ---
 
-    private int CheckH1_TeacherSingleBooked(List<DecodedGene> schedule, ref ulong brokenMask)
+    private int CheckH1_TeacherSingleBooked(List<DecodedGene> schedule, Genome genome)
     {
         int violations = 0;
         
@@ -125,7 +152,7 @@ public class FitnessEvaluator
                 if (teacherBookingMatrix[index] == 1) 
                 {
                     violations++; // Teacher is in two places at once!
-                    brokenMask |= (1UL << gene.CourseIndex);
+                    genome.SetBroken(gene.CourseIndex);
                 }
                 teacherBookingMatrix[index] = 1; // Mark as booked
             }
@@ -135,7 +162,7 @@ public class FitnessEvaluator
         return violations;
     }
 
-    private int CheckH2_RoomSingleBooked(List<DecodedGene> schedule, ref ulong brokenMask)
+    private int CheckH2_RoomSingleBooked(List<DecodedGene> schedule, Genome genome)
     {
         int violations = 0;
         int[] roomBookingMatrix = ArrayPool<int>.Shared.Rent(_mapper.R_max * _mapper.S_max);
@@ -156,11 +183,11 @@ public class FitnessEvaluator
                     violations++; 
                     
                     // 1. Flag the new course that just tried to enter
-                    brokenMask |= (1UL << gene.CourseIndex);
+                    genome.SetBroken(gene.CourseIndex);
                     
                     // 2. Flag the original course that was already sitting there!
                     // (Subtract 1 to get the actual CourseIndex back)
-                    brokenMask |= (1UL << (existingOccupant - 1));
+                    genome.SetBroken(existingOccupant - 1);
                 }
                 else
                 {
@@ -174,7 +201,7 @@ public class FitnessEvaluator
         return violations;
     }
 
-    private int CheckH3_RoomCapacity(List<DecodedGene> schedule, ref ulong brokenMask)
+    private int CheckH3_RoomCapacity(List<DecodedGene> schedule, Genome genome)
     {
         int violations = 0;
         foreach (var gene in schedule)
@@ -183,13 +210,13 @@ public class FitnessEvaluator
             if (gene.Course.RequiredSlots > 0 && gene.Course.Students > room.Capacity) 
             {
                 violations++;
-                brokenMask |= (1UL << gene.CourseIndex);
+                genome.SetBroken(gene.CourseIndex);
             }
         }
         return violations;
     }
 
-    private int CheckH4_TeacherQualified(List<DecodedGene> schedule, ref ulong brokenMask)
+    private int CheckH4_TeacherQualified(List<DecodedGene> schedule, Genome genome)
     {
         int violations = 0;
         foreach (var gene in schedule)
@@ -198,13 +225,13 @@ public class FitnessEvaluator
             if (!teacher.Subjects.Contains(gene.Course.SubjectId))
             {
                 violations++;
-                brokenMask |= (1UL << gene.CourseIndex);
+                genome.SetBroken(gene.CourseIndex);
             }
         }
         return violations;
     }
 
-    private int CheckH5_RoomTypeCorrect(List<DecodedGene> schedule, ref ulong brokenMask)
+    private int CheckH5_RoomTypeCorrect(List<DecodedGene> schedule, Genome genome)
     {
         int violations = 0;
         foreach (var gene in schedule)
@@ -213,13 +240,13 @@ public class FitnessEvaluator
             if (room.Type != gene.Course.RequiredRoomType)
             {
                 violations++;
-                brokenMask |= (1UL << gene.CourseIndex);
+                genome.SetBroken(gene.CourseIndex);
             }
         }
         return violations;
     }
 
-    private int CheckH6_TeacherAvailable(List<DecodedGene> schedule, ref ulong brokenMask)
+    private int CheckH6_TeacherAvailable(List<DecodedGene> schedule, Genome genome)
     {
         int violations = 0;
         foreach (var gene in schedule)
@@ -234,7 +261,7 @@ public class FitnessEvaluator
                 if (!teacher.AvailableSlots.Contains(currentSlot))
                 {
                     violations++;
-                    brokenMask |= (1UL << gene.CourseIndex);
+                    genome.SetBroken(gene.CourseIndex);
                     break; // One broken slot ruins the whole class placement
                 }
             }
@@ -242,7 +269,7 @@ public class FitnessEvaluator
         return violations;
     }
 
-    private int CheckH7_StudentGroupSingleBooked(List<DecodedGene> schedule, ref ulong brokenMask)
+    private int CheckH7_StudentGroupSingleBooked(List<DecodedGene> schedule, Genome genome)
     {
         int violations = 0;
         int[] groupBookingMatrix = ArrayPool<int>.Shared.Rent(_mapper.GroupCount * _mapper.S_max);
@@ -259,7 +286,7 @@ public class FitnessEvaluator
                 if (groupBookingMatrix[index] == 1)
                 {
                     violations++; // Students are in two places at once!
-                    brokenMask |= (1UL << gene.CourseIndex);
+                    genome.SetBroken(gene.CourseIndex);
                 }
                 groupBookingMatrix[index] = 1;
             }
@@ -269,7 +296,7 @@ public class FitnessEvaluator
         return violations;
     }
 
-    private int CheckH8_TeacherMaxHours(List<DecodedGene> schedule, ref ulong brokenMask)
+    private int CheckH8_TeacherMaxHours(List<DecodedGene> schedule, Genome genome)
     {
         int violations = 0;
         
@@ -295,7 +322,7 @@ public class FitnessEvaluator
                 {
                     if (gene.T == t)
                     {
-                        brokenMask |= (1UL << gene.CourseIndex);
+                        genome.SetBroken(gene.CourseIndex);
                     }
                 }
             }

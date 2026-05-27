@@ -85,11 +85,10 @@ public class GeneticAlgorithm
         {
             if (!_population[i].IsEvaluated)
             {
-                // result now holds BOTH .Fitness and .Mask
-                var result = _evaluator.Evaluate(_population[i].Genes);
-                
-                _population[i].Fitness = result.Fitness;
-                _population[i].BrokenGenesMask = result.Mask; // Save the mask!
+                // Evaluator will write broken-gene flags directly into the genome's mask
+                var fitness = _evaluator.Evaluate(_population[i]);
+
+                _population[i].Fitness = fitness;
                 _population[i].IsEvaluated = true;
             }
         });
@@ -193,8 +192,8 @@ public class GeneticAlgorithm
     {
         for (int i = 0; i < _genomeLength; i++)
         {
-            // Is this specific course's bit flipped to 1?
-            bool isBroken = (child.BrokenGenesMask & (1UL << i)) != 0;
+            // Is this specific course flagged as broken in the genome's mask?
+            bool isBroken = child.IsBroken(i);
 
             // 50% chance to mutate if broken, 1% if it's fine
             float effectiveMutationRate = isBroken ? 0.50f : _mutationRate;

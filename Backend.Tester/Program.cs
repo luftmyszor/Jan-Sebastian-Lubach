@@ -34,9 +34,9 @@ class Program
         var gen = new TimetableDataGenerator(seed: 1337);
 
         var groups = gen.GenerateStudentGroups(10);     
-        var courses = gen.GenerateCourses(50, groups); 
-        var instructors = gen.GenerateInstructors(30); 
-        var rooms = gen.GenerateRooms(50);
+        var courses = gen.GenerateCourses(40, groups); 
+        var instructors = gen.GenerateInstructors(40); 
+        var rooms = gen.GenerateRooms(30);
 
         // ==========================================
         // PHASE 2: INITIALIZE MAPPER
@@ -73,7 +73,7 @@ for (int i = 1; i <= maxGenerations; i++)
         
         // Output in a specific format for Python to read
         Console.WriteLine($"PROGRESS|{i}|{bestFitness:F2}");
-        if (bestFitness >= 955.0f) // Adjusted threshold for "perfect" solution based on new scoring
+        if (bestFitness >= 940.0f) // Adjusted threshold for "perfect" solution based on new scoring
         {
             Console.WriteLine($"PERFECT_SOLUTION|{i}|{bestFitness:F2}");
             break;

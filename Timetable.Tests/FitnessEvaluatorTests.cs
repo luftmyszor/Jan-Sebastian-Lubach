@@ -62,19 +62,14 @@ public class FitnessEvaluatorTests
         testGenome.Genes[1] = mapper.Encode(t1, conflictingRoom, conflictingSlot);
 
         // Act
-        // Evaluate returns a Tuple: (float Fitness, ulong Mask) based on our previous architecture discussion
-        var result = evaluator.Evaluate(testGenome.Genes);
+        var fitness = evaluator.Evaluate(testGenome);
 
         // Assert
-        // The fitness should be highly negative (e.g., -1.0f * number of violations)
-        Assert.True(result.Fitness < 0, $"Expected negative fitness, but got {result.Fitness}");
+        Assert.True(fitness < 0, $"Expected negative fitness, but got {fitness}");
 
-        // The BitMask MUST have bits 0 and 1 flipped to '1' because Course[0] and Course[1] collided.
-        bool course0Broken = (result.Mask & (1UL << 0)) != 0;
-        bool course1Broken = (result.Mask & (1UL << 1)) != 0;
-
-        Assert.True(course0Broken, "BitMask did not flag Course 0 as broken.");
-        Assert.True(course1Broken, "BitMask did not flag Course 1 as broken.");
+        // The genome's mask must have bits 0 and 1 set
+        Assert.True(testGenome.IsBroken(0), "Mask did not flag Course 0 as broken.");
+        Assert.True(testGenome.IsBroken(1), "Mask did not flag Course 1 as broken.");
     }
 
     [Fact]
@@ -98,16 +93,13 @@ public class FitnessEvaluatorTests
         testGenome.Genes[courseIndexB] = mapper.Encode(2, 2, conflictingSlot);
 
         // Act
-        var result = evaluator.Evaluate(testGenome.Genes);
+        var fitness = evaluator.Evaluate(testGenome);
 
         // Assert
-        Assert.True(result.Fitness < 0, "Schedule should be invalid due to student group overlap.");
+        Assert.True(fitness < 0, "Schedule should be invalid due to student group overlap.");
 
-        bool courseABroken = (result.Mask & (1UL << courseIndexA)) != 0;
-        bool courseBBroken = (result.Mask & (1UL << courseIndexB)) != 0;
-
-        Assert.True(courseABroken, $"BitMask did not flag Course {courseIndexA} as broken.");
-        Assert.True(courseBBroken, $"BitMask did not flag Course {courseIndexB} as broken.");
+        Assert.True(testGenome.IsBroken(courseIndexA), $"Mask did not flag Course {courseIndexA} as broken.");
+        Assert.True(testGenome.IsBroken(courseIndexB), $"Mask did not flag Course {courseIndexB} as broken.");
     }
 
     [Fact]
@@ -131,11 +123,10 @@ public class FitnessEvaluatorTests
         testGenome.Genes[courseIndex] = mapper.Encode(t, roomIndex, s);
 
         // Act
-        var result = evaluator.Evaluate(testGenome.Genes);
+        var fitness = evaluator.Evaluate(testGenome);
 
         // Assert
-        bool isBroken = (result.Mask & (1UL << courseIndex)) != 0;
-        Assert.True(isBroken, "BitMask did not flag the course for exceeding room capacity.");
+        Assert.True(testGenome.IsBroken(courseIndex), "Mask did not flag the course for exceeding room capacity.");
     }
 
     [Fact]
@@ -161,10 +152,9 @@ public class FitnessEvaluatorTests
         testGenome.Genes[0] = mapper.Encode(t, r, unavailableSlot);
 
         // Act
-        var result = evaluator.Evaluate(testGenome.Genes);
+        var fitness = evaluator.Evaluate(testGenome);
 
         // Assert
-        bool isBroken = (result.Mask & (1UL << 0)) != 0;
-        Assert.True(isBroken, "BitMask did not flag the course scheduled outside teacher's hours.");
+        Assert.True(testGenome.IsBroken(0), "Mask did not flag the course scheduled outside teacher's hours.");
     }
 }
