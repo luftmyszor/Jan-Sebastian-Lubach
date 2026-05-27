@@ -10,6 +10,9 @@ class Program
         Console.WriteLine("      USOS GA SOLVER (GENERATOR TEST MODE)        ");
         Console.WriteLine("==================================================");
 
+        Console.WriteLine("\n[PHASE 0] Loading Settings...");
+        var timeConfig = TimetableLoader.LoadTimeSlots("time_slots.json");
+
         /* =========================================================
          * COMMENTED OUT: REAL DATA & LLM PIPELINE
          * =========================================================
@@ -31,15 +34,15 @@ class Program
         var gen = new TimetableDataGenerator(seed: 1337);
 
         var groups = gen.GenerateStudentGroups(10);     
-        var courses = gen.GenerateCourses(60, groups); 
-        var instructors = gen.GenerateInstructors(30); 
+        var courses = gen.GenerateCourses(50, groups); 
+        var instructors = gen.GenerateInstructors(40); 
         var rooms = gen.GenerateRooms(50);
 
         // ==========================================
         // PHASE 2: INITIALIZE MAPPER
         // ==========================================
         Console.WriteLine("\n[PHASE 2] Loading data into Mapper...");
-        var mapper = new TimetableMapper(courses, instructors, rooms, slotsPerDay: 10, days: 5); 
+        var mapper = new TimetableMapper(courses, instructors, rooms, slotsPerDay: timeConfig.SlotsPerDay, days: 5); 
 
         // ==========================================
         // PHASE 3: GENETIC ALGORITHM
@@ -68,7 +71,7 @@ class Program
             
             long stepTime = stopwatch.ElapsedMilliseconds - startMs;
 
-            if (i % 1 == 0 || i == 1)
+            if (i % 10 == 0 || i == 1)
             {
                 float bestFitness = ga.GetBestFitness(); 
                 float averageFitness = ga.GetAverageFitness();
@@ -83,6 +86,7 @@ class Program
                 //     Console.WriteLine($"\n[SUCCESS] Perfect solution found at generation {i}!");
                 //     break;
                 // }
+                Console.Out.Flush();
             }
         }
 

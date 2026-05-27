@@ -7,7 +7,7 @@ public class TimetableDataGenerator
     private readonly Random _rand;
 
     private const int DAYS_IN_WEEK = 5;
-    private const int SLOTS_PER_DAY = 10;
+    private const int SLOTS_PER_DAY = 7;
     private const int TOTAL_SLOTS = DAYS_IN_WEEK * SLOTS_PER_DAY;
 
     private readonly string[] _subjectPool = {

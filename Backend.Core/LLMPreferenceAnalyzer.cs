@@ -166,7 +166,7 @@ OCZEKIWANY FORMAT (Zwróć bezpośrednio ten obiekt):
 {
   ""preferred_days"": [""Tue"", ""Thu""],
   ""preferred_hours_start"": 8,
-  ""preferred_hours_end"": 12,
+  ""preferred_hours_end"": 20,
   ""forbidden_slots"": [
     {""day"": ""Fri"", ""from"": 12, ""to"": 20}
   ],

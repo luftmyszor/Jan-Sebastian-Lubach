@@ -66,3 +66,30 @@ public class ForbiddenSlot
     [JsonPropertyName("from")] public int From { get; set; }
     [JsonPropertyName("to")] public int To { get; set; }
 }
+
+public class TimeSlotConfig
+{
+    [JsonPropertyName("slotsPerDay")] 
+    public int SlotsPerDay { get; set; }
+    
+    [JsonPropertyName("slots")] 
+    public List<TimeSlot> Slots { get; set; } = new();
+}
+
+public class TimeSlot
+{
+    [JsonPropertyName("index")] 
+    public int Index { get; set; }
+    
+    [JsonPropertyName("start")] 
+    public string Start { get; set; } = "";
+    
+    [JsonPropertyName("end")] 
+    public string End { get; set; } = "";
+    
+    [JsonPropertyName("startHour")] 
+    public double StartHour { get; set; }
+    
+    [JsonPropertyName("endHour")] 
+    public double EndHour { get; set; }
+}

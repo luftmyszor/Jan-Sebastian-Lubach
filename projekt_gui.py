@@ -14,13 +14,10 @@ class ScheduleApp:
 
         # Godziny zajęć odwzorowane z widoku UI
         self.days = ["Poniedziałek", "Wtorek", "Środa", "Czwartek", "Piątek"]
-        self.time_slots = [
-            "08:00 - 09:30",
-            "09:45 - 11:15",
-            "11:30 - 13:30",  # Przerwa obiadowa
-            "14:00 - 15:30",
-            "15:45 - 17:15",
-        ]
+        # Load Time Slots
+        with open("time_slots.json", "r", encoding="utf-8") as f:
+            slot_data = json.load(f)
+            self.time_slots = [f"{s['start']} - {s['end']}" for s in slot_data["slots"]]
 
         # --- WCZYTYWANIE I PARSOWANIE DANYCH Z NOWEGO PLIKU JSON ---
         folder_skryptu = os.path.dirname(os.path.abspath(__file__))
@@ -79,15 +76,6 @@ class ScheduleApp:
                 time_idx = (slot_index // len(self.days)) % len(
                     self.time_slots
                 )
-
-                if (
-                    time_idx == 2
-                ):  # Rezerwacja slotu 11:30 - 13:30 na przerwę obiadową
-                    slot_index += len(self.days)
-                    day_idx = slot_index % len(self.days)
-                    time_idx = (slot_index // len(self.days)) % len(
-                        self.time_slots
-                    )
 
                 group_slot_counters[group_id] = slot_index + 1
 
@@ -330,25 +318,6 @@ class ScheduleApp:
                 anchor="center",
             )
             lbl_time.grid(row=r_idx + 1, column=0, sticky="nsew", pady=10)
-
-            # Specjalna obsługa przerwy obiadowej wiersza (indeks czasowy 2)
-            if time_slot == "11:30 - 13:30":
-                lbl_break = tk.Label(
-                    self.grid_container,
-                    text="Przerwa obiadowa",
-                    font=("Arial", 9, "italic"),
-                    fg="#7F8C8D",
-                    bg="#EAEDED",
-                    justify="center",
-                )
-                lbl_break.grid(
-                    row=r_idx + 1,
-                    column=1,
-                    columnspan=len(self.days),
-                    sticky="ew",
-                    pady=4,
-                    padx=2,
-                )
 
     def populate_filters(self):
         """Uzupełnia filtry unikalnymi danymi wyciągniętymi bezpośrednio z nowego pliku JSON"""

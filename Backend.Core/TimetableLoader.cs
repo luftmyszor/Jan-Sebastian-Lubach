@@ -6,46 +6,60 @@ using System.Text.Json;
 
 public static class TimetableLoader
 {
-    public static (List<Course> courses, List<Instructor> instructors, List<Room> rooms) LoadFromJson(string filePath, int slotsPerDay = 10, int startHourOfDay = 8)
+    // New method to load the Time Slots JSON
+    public static TimeSlotConfig LoadTimeSlots(string filePath)
+    {
+        if (!File.Exists(filePath))
+            throw new FileNotFoundException($"Brak pliku z konfiguracją godzin: {filePath}");
+
+        string json = File.ReadAllText(filePath);
+        return JsonSerializer.Deserialize<TimeSlotConfig>(json) ?? new TimeSlotConfig();
+    }
+
+    // Pass TimeSlotConfig instead of hardcoded slotsPerDay/startHourOfDay
+    public static (List<Course> courses, List<Instructor> instructors, List<Room> rooms) LoadFromJson(
+        string filePath, 
+        TimeSlotConfig timeConfig)
     {
         string json = File.ReadAllText(filePath);
         using JsonDocument doc = JsonDocument.Parse(json);
         var root = doc.RootElement;
 
-        // Use ?? new List<T>() to guarantee we never return null, fixing CS8619
         var rooms = JsonSerializer.Deserialize<List<Room>>(root.GetProperty("rooms").GetRawText()) ?? new List<Room>();
         var courses = JsonSerializer.Deserialize<List<Course>>(root.GetProperty("courses").GetRawText()) ?? new List<Course>();
         var instructors = JsonSerializer.Deserialize<List<Instructor>>(root.GetProperty("instructors").GetRawText()) ?? new List<Instructor>();
 
-        // 2. Adapt Courses (HoursPerSemester -> RequiredSlots)
+        // 2. Adapt Courses (HoursPerSemester -> RequiredSlots using 30h = 1 slot of 1.5h per week)
         foreach (var course in courses)
         {
             var courseElement = root.GetProperty("courses").EnumerateArray()
                 .FirstOrDefault(c => c.GetProperty("id").GetString() == course.Id);
 
-            // Check if element is valid before accessing properties (Fixes CS8602)
             if (courseElement.ValueKind != JsonValueKind.Undefined && 
                 courseElement.TryGetProperty("hours_per_semester", out JsonElement hoursEl))
             {
                 int hoursPerSemester = hoursEl.GetInt32();
-                course.RequiredSlots = (int)Math.Ceiling(hoursPerSemester / 15.0); 
+                // 30 hours per semester = 1 block of 1.5h per week
+                course.RequiredSlots = (int)Math.Round(hoursPerSemester / 30.0, MidpointRounding.AwayFromZero); 
                 if (course.RequiredSlots == 0) course.RequiredSlots = 1;
             }
             else
             {
-                course.RequiredSlots = 1; // Failsafe default
+                course.RequiredSlots = 1; 
             }
         }
 
-        // 3. Adapt Instructors (LLM Preferences -> 1D Slot Indexes)
+        // 3. Adapt Instructors using the real Time Slots configuration
         var daysMap = new Dictionary<string, int> 
         { 
-            {"Poniedziałek", 0}, {"Wtorek", 1}, {"Środa", 2}, {"Czwartek", 3}, {"Piątek", 4} 
+            {"Poniedziałek", 0}, {"Wtorek", 1}, {"Środa", 2}, {"Czwartek", 3}, {"Piątek", 4},
+            // Fallbacks for English LLM output
+            {"Mon", 0}, {"Tue", 1}, {"Wed", 2}, {"Thu", 3}, {"Fri", 4}
         };
 
         foreach (var inst in instructors)
         {
-            var availableSlots = Enumerable.Range(0, 5 * slotsPerDay).ToList();
+            var availableSlots = Enumerable.Range(0, 5 * timeConfig.SlotsPerDay).ToList();
             var preferredSlots = new List<int>();
 
             var instElement = root.GetProperty("instructors").EnumerateArray()
@@ -62,18 +76,20 @@ public static class TimetableLoader
                     {
                         string? day = forbid.GetProperty("day").GetString();
                         
-                        // Check if day is not null before using it as dictionary key (Fixes CS8600/CS8604)
                         if (!string.IsNullOrEmpty(day) && daysMap.TryGetValue(day, out int dayIdx))
                         {
-                            int from = forbid.GetProperty("from").GetInt32();
-                            int to = forbid.GetProperty("to").GetInt32();
+                            double from = forbid.GetProperty("from").GetDouble();
+                            double to = forbid.GetProperty("to").GetDouble();
                             
-                            int startSlot = Math.Max(0, from - startHourOfDay);
-                            int endSlot = Math.Min(slotsPerDay, to - startHourOfDay);
-                            
-                            for (int s = startSlot; s < endSlot; s++)
+                            foreach (var slot in timeConfig.Slots)
                             {
-                                availableSlots.Remove((dayIdx * slotsPerDay) + s);
+                                // If the slot overlaps with the forbidden timeframe, remove it
+                                // Overlap logic: slot.start < forbid.to AND slot.end > forbid.from
+                                if (slot.StartHour < to && slot.EndHour > from)
+                                {
+                                    int absoluteSlotIndex = (dayIdx * timeConfig.SlotsPerDay) + slot.Index;
+                                    availableSlots.Remove(absoluteSlotIndex);
+                                }
                             }
                         }
                     }
@@ -82,23 +98,24 @@ public static class TimetableLoader
                 // B. Handle Preferred Slots
                 if (prefs.TryGetProperty("preferred_days", out JsonElement prefDays))
                 {
-                    int? prefStart = prefs.TryGetProperty("preferred_hours_start", out JsonElement ps) && ps.ValueKind != JsonValueKind.Null ? ps.GetInt32() : null;
-                    int? prefEnd = prefs.TryGetProperty("preferred_hours_end", out JsonElement pe) && pe.ValueKind != JsonValueKind.Null ? pe.GetInt32() : null;
+                    double prefStart = prefs.TryGetProperty("preferred_hours_start", out JsonElement ps) && ps.ValueKind != JsonValueKind.Null ? ps.GetDouble() : 8.0;
+                    double prefEnd = prefs.TryGetProperty("preferred_hours_end", out JsonElement pe) && pe.ValueKind != JsonValueKind.Null ? pe.GetDouble() : 20.0;
 
                     foreach (var dayEl in prefDays.EnumerateArray())
                     {
                         string? dayName = dayEl.GetString();
                         if (!string.IsNullOrEmpty(dayName) && daysMap.TryGetValue(dayName, out int dayIdx))
                         {
-                            int startSlot = Math.Max(0, (prefStart ?? startHourOfDay) - startHourOfDay);
-                            int endSlot = Math.Min(slotsPerDay, (prefEnd ?? (startHourOfDay + slotsPerDay)) - startHourOfDay);
-
-                            for (int s = startSlot; s < endSlot; s++)
+                            foreach (var slot in timeConfig.Slots)
                             {
-                                int slotIndex = (dayIdx * slotsPerDay) + s;
-                                if (availableSlots.Contains(slotIndex))
+                                // If the slot is fully entirely inside the preferred timeframe
+                                if (slot.StartHour >= prefStart && slot.EndHour <= prefEnd)
                                 {
-                                    preferredSlots.Add(slotIndex);
+                                    int absoluteSlotIndex = (dayIdx * timeConfig.SlotsPerDay) + slot.Index;
+                                    if (availableSlots.Contains(absoluteSlotIndex))
+                                    {
+                                        preferredSlots.Add(absoluteSlotIndex);
+                                    }
                                 }
                             }
                         }
