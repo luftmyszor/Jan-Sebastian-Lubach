@@ -1,0 +1,15 @@
+C:\Users\rober\source\repos\M1M3USOS\M1M3USOS\bin\Debug\net10.0\M1M3USOS.exe
+C:\Users\rober\source\repos\M1M3USOS\M1M3USOS\bin\Debug\net10.0\dane_nowe.json
+C:\Users\rober\source\repos\M1M3USOS\M1M3USOS\bin\Debug\net10.0\M1M3USOS.deps.json
+C:\Users\rober\source\repos\M1M3USOS\M1M3USOS\bin\Debug\net10.0\M1M3USOS.runtimeconfig.json
+C:\Users\rober\source\repos\M1M3USOS\M1M3USOS\bin\Debug\net10.0\M1M3USOS.dll
+C:\Users\rober\source\repos\M1M3USOS\M1M3USOS\bin\Debug\net10.0\M1M3USOS.pdb
+C:\Users\rober\source\repos\M1M3USOS\M1M3USOS\obj\Debug\net10.0\M1M3USOS.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\rober\source\repos\M1M3USOS\M1M3USOS\obj\Debug\net10.0\M1M3USOS.AssemblyInfoInputs.cache
+C:\Users\rober\source\repos\M1M3USOS\M1M3USOS\obj\Debug\net10.0\M1M3USOS.AssemblyInfo.cs
+C:\Users\rober\source\repos\M1M3USOS\M1M3USOS\obj\Debug\net10.0\M1M3USOS.csproj.CoreCompileInputs.cache
+C:\Users\rober\source\repos\M1M3USOS\M1M3USOS\obj\Debug\net10.0\M1M3USOS.dll
+C:\Users\rober\source\repos\M1M3USOS\M1M3USOS\obj\Debug\net10.0\refint\M1M3USOS.dll
+C:\Users\rober\source\repos\M1M3USOS\M1M3USOS\obj\Debug\net10.0\M1M3USOS.pdb
+C:\Users\rober\source\repos\M1M3USOS\M1M3USOS\obj\Debug\net10.0\M1M3USOS.genruntimeconfig.cache
+C:\Users\rober\source\repos\M1M3USOS\M1M3USOS\obj\Debug\net10.0\ref\M1M3USOS.dll
