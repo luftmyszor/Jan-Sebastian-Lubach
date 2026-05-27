@@ -68,7 +68,7 @@ class Program
             
             long stepTime = stopwatch.ElapsedMilliseconds - startMs;
 
-            if (i % 10 == 0 || i == 1)
+            if (i % 1 == 0 || i == 1)
             {
                 float bestFitness = ga.GetBestFitness(); 
                 float averageFitness = ga.GetAverageFitness();
@@ -78,10 +78,11 @@ class Program
                 Console.WriteLine($"{i}\t{bestFitness:F2}\t{averageFitness:F2}\t{worstFitness:F2}\t{stepTime}ms");
                 Console.ResetColor();
 
-                if (bestFitness >= 99.9f)
-                {
-                    
-                }
+                // if (bestFitness >= 99.9f)
+                // {
+                //     Console.WriteLine($"\n[SUCCESS] Perfect solution found at generation {i}!");
+                //     break;
+                // }
             }
         }
 
