@@ -11,8 +11,8 @@ using System.Threading.Tasks;
 public class LlmPreferenceAnalyzer
 {
     private readonly HttpClient _httpClient;
-    private readonly string _apiUrl = "http://149.156.194.192:8088/v1/chat/completions";
-    private readonly string _token = "bsk-00a229f80354793ad87e93fea4691b31521e4fb43a2cf8cd3d916fe02b64a010";
+    private readonly string _apiUrl = "";
+    private readonly string _token = "";
     private readonly string _modelName = "SpeakLeash/bielik-11b-v3.0-instruct:Q4_K_M";
     private readonly bool _offlineMode;
     private readonly string _cacheFilePath = "llm_cache.json";
