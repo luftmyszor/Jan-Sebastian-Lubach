@@ -11,8 +11,8 @@ using System.Threading.Tasks;
 public class LlmPreferenceAnalyzer
 {
     private readonly HttpClient _httpClient;
-    private readonly string _apiUrl = "";
-    private readonly string _token = "";
+    private readonly string _apiUrl = "http://149.156.194.192:8088/v1/chat/completions";
+    private readonly string _token = "bsk-00a229f80354793ad87e93fea4691b31521e4fb43a2cf8cd3d916fe02b64a010";
     private readonly string _modelName = "SpeakLeash/bielik-11b-v3.0-instruct:Q4_K_M";
     private readonly bool _offlineMode;
     private readonly string _cacheFilePath = "llm_cache.json";
@@ -32,37 +32,11 @@ public class LlmPreferenceAnalyzer
 
         if (_offlineMode)
         {
-            Console.WriteLine("Tryb offline. Generowanie domyślnych preferencji.");
+            Console.WriteLine("Tryb offline. Generowanie domyslnych preferencji.");
             return GenerateDefaultBatch(instructors);
         }
 
-        // 1. ZAPYTANIE O POSTĘP (INTERAKCJA Z UŻYTKOWNIKIEM)
-        if (File.Exists(_cacheFilePath))
-        {
-            Console.WriteLine("\n[INFO] Znaleziono zapisany postęp z poprzedniej sesji (llm_cache.json).");
-            Console.Write("Czy chcesz wczytać zapisane wyniki i kontynuować? (T - Tak / N - Nie, zacznij od nowa): ");
-
-            string choice = Console.ReadLine()?.Trim().ToUpper();
-
-            if (choice == "T")
-            {
-                try
-                {
-                    var cacheJson = File.ReadAllText(_cacheFilePath);
-                    finalDict = JsonSerializer.Deserialize<Dictionary<string, InstructorPreferences>>(cacheJson) ?? new Dictionary<string, InstructorPreferences>();
-                    Console.WriteLine($"Wczytano {finalDict.Count} gotowych wyników. Kontynuuję od miejsca przerwania...");
-                }
-                catch (Exception)
-                {
-                    Console.WriteLine("[OSTRZEŻENIE] Plik cache uszkodzony, zaczynam od nowa.");
-                }
-            }
-            else
-            {
-                Console.WriteLine("Zaczynam analizę od nowa (stary plik postępu zostanie nadpisany)...");
-                File.Delete(_cacheFilePath); // Kasowanie starego postępu
-            }
-        }
+        
 
         int successCount = 0;
 
@@ -71,18 +45,16 @@ public class LlmPreferenceAnalyzer
         {
             var inst = instructors[i];
 
-            // Pomijamy, jeśli wynik jest już wczytany
+            // Pomijamy, jesli wynik jest juz wczytany
             if (finalDict.ContainsKey(inst.Id))
             {
                 continue;
             }
-
             Console.WriteLine($"\n[{i + 1}/{instructors.Count}] Analiza dla: {inst.Name}...");
 
             var pref = await ProcessSingleInstructorAsync(inst);
             finalDict[inst.Id] = pref;
-
-            // Zapis po każdym udanym kroku
+            // Zapis po kazdym udanym kroku
             File.WriteAllText(_cacheFilePath, JsonSerializer.Serialize(finalDict, new JsonSerializerOptions { WriteIndented = true }));
             successCount++;
 
@@ -126,13 +98,13 @@ public class LlmPreferenceAnalyzer
                     if ((int)response.StatusCode == 429 || (int)response.StatusCode == 503)
                     {
                         int waitSeconds = 10 * (i + 1);
-                        Console.WriteLine($"Serwer zajęty (kod {(int)response.StatusCode}). Czekam {waitSeconds} sekund...");
+                        Console.WriteLine($"Serwer zajety (kod {(int)response.StatusCode}). Czekam {waitSeconds} sekund...");
                         await Task.Delay(waitSeconds * 1000);
                         continue;
                     }
                     else
                     {
-                        Console.WriteLine($"[BŁĄD API - Kod {(int)response.StatusCode}] Serwer odrzucił zapytanie.");
+                            Console.WriteLine($"[BLAD API - Kod {(int)response.StatusCode}] Serwer odrzucil zapytanie.");
                         continue;
                     }
                 }
@@ -141,36 +113,36 @@ public class LlmPreferenceAnalyzer
             }
             catch (JsonException)
             {
-                Console.WriteLine($"[BŁĄD JSON] Model zwrócił zły format. Ponawiam...");
+                    Console.WriteLine($"[BLAD JSON] Model zwrocil zly format. Ponawiam...");
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"[BŁĄD SIECI] (próba {i + 1}): {ex.Message}");
+                    Console.WriteLine($"[BLAD SIECI] (proba {i + 1}): {ex.Message}");
             }
         }
 
-        Console.WriteLine($"Nie udało się przeanalizować {inst.Name}. Ustawiam domyślne.");
+        Console.WriteLine($"Nie udalo sie przeanalizowac {inst.Name}. Ustawiam domyslne.");
         return GetDefaultPreferences();
     }
 
     private string GetSystemPrompt()
     {
-        return @"Jesteś precyzyjnym ekstraktorem danych. Zwróć WYŁĄCZNIE poprawny obiekt JSON, bez żadnego tekstu pobocznego.
+                return @"Jestes precyzyjnym ekstraktorem danych. Zwroc WYLACZNIE poprawny obiekt JSON, bez zadnego tekstu pobocznego.
 
 ZASADY:
-1. Pomiń dni, w których prowadzący NIE MOGĄ uczyć. Wstaw je do ""forbidden_slots"".
-2. Skup się na godzinach ""MOGĘ"".
+1. Sloty w ktorych prowadzacy NIE MOGA uczyc wstaw do ""forbidden_slots"".
+2. Skup sie na godzinach ""MOGA"".
 3. Dni tygodnia to: ""Mon"", ""Tue"", ""Wed"", ""Thu"", ""Fri"".
 
-OCZEKIWANY FORMAT (Zwróć bezpośrednio ten obiekt):
+OCZEKIWANY FORMAT (Zwroc bezposrednio ten obiekt):
 {
-  ""preferred_days"": [""Tue"", ""Thu""],
-  ""preferred_hours_start"": 8,
-  ""preferred_hours_end"": 20,
-  ""forbidden_slots"": [
-    {""day"": ""Fri"", ""from"": 12, ""to"": 20}
-  ],
-  ""min_start_hour"": 8
+    ""preferred_days"": [""Tue"", ""Thu""],
+    ""preferred_hours_start"": 8,
+    ""preferred_hours_end"": 20,
+    ""forbidden_slots"": [
+        {""day"": ""Fri"", ""from"": 12, ""to"": 20}
+    ],
+    ""min_start_hour"": 8
 }";
     }
 
