@@ -84,37 +84,58 @@ namespace Backend.Tester
                 // =========================================================
                 // NAPRAWIONY ZAPIS WYNIKU DO JSON
                 // =========================================================
-                int[] bestGenome = ga.GetBestGenes();
                 
-                // Tworzymy listę obiektów, które będą pasować do formatu GUI w Pythonie
+                int[] bestGenome = ga.GetBestGenes();
                 var exportList = new System.Collections.Generic.List<object>();
                 
                 string[] daysPl = { "Poniedziałek", "Wtorek", "Środa", "Czwartek", "Piątek" };
                 string[] hoursPl = { "08:00 - 09:30", "09:45 - 11:15", "11:30 - 13:00", "13:15 - 14:45", "15:00 - 16:30", "16:45 - 18:15", "18:30 - 20:00" };
                 int slotsPerDay = hoursPl.Length; 
 
-                // Ręczne dekodowanie każdego genu z int do czytelnych wartości
-                for (int i = 0; i < bestGenome.Length; i++)
+                for (int i = 0; i < mapper.Courses.Count; i++)
                 {
-                    var (t, r, s) = mapper.Decode(bestGenome[i]);
+                    int geneValue = bestGenome[i];
                     var course = mapper.Courses[i];
+
+                    // 1. Jeśli cały gen jest zepsuty (ujemny)
+                    if (geneValue < 0)
+                    {
+                        exportList.Add(new {
+                            dzien = "Brak", godzina = "Brak",
+                            sala = "BRAK SALI", wykladowca = "BRAK WYKŁADOWCY",
+                            przedmiot = course.Name + " (BŁĄD GENU)", klasa = course.GroupId, typ = course.Type
+                        });
+                        continue; 
+                    }
+
+                    var (t, r, s) = mapper.Decode(geneValue);
                     
-                    // Rozbijamy długie zajęcia na pojedyncze kafelki (godziny)
+                    // 2. TARCZA OCHRONNA: Sprawdzamy czy zdekodowane t oraz r są w ogóle legalne!
+                    // Muszą być >= 0 oraz mniejsze niż rozmiar listy.
+                    if (t < 0 || t >= mapper.Instructors.Count || 
+                        r < 0 || r >= mapper.Rooms.Count) 
+                    {
+                        exportList.Add(new {
+                            dzien = "Brak", godzina = "Brak",
+                            sala = "BRAK SALI", wykladowca = "BRAK WYKŁADOWCY",
+                            przedmiot = course.Name + " (BRAK ZASOBÓW)", klasa = course.GroupId, typ = course.Type
+                        });
+                        continue;
+                    }
+
+                    // 3. Właściwe przypisanie (jeśli wszystko jest w 100% poprawne)
                     for(int offset = 0; offset < course.RequiredSlots; offset++)
                     {
                         int currentS = s + offset;
                         int d = currentS / slotsPerDay;
                         int h = currentS % slotsPerDay;
 
-                        // Upewniamy się, że nie wykraczamy poza tydzień
-                        if (d >= 0 && d < 5 && h >= 0 && h < slotsPerDay)
+                        if (d >= 0 && d < daysPl.Length && h >= 0 && h < slotsPerDay)
                         {
                             exportList.Add(new {
                                 dzien = daysPl[d],
                                 godzina = hoursPl[h],
                                 sala = mapper.Rooms[r].Id,
-                                // Tutaj wstawiamy ID np "I01", bo napisaliśmy wcześniej łatkę 
-                                // w Pythonie, która i tak sama zamieni to na "prof. dr hab. ..."
                                 wykladowca = mapper.Instructors[t].Id, 
                                 przedmiot = course.Name,
                                 klasa = course.GroupId,
@@ -127,11 +148,8 @@ namespace Backend.Tester
                 string outputFilename = "generated_timetable.json";
                 var options = new System.Text.Json.JsonSerializerOptions { WriteIndented = true };
                 string jsonString = System.Text.Json.JsonSerializer.Serialize(exportList, options);
-                
                 System.IO.File.WriteAllText(outputFilename, jsonString);
-
                 Console.WriteLine($"DONE|{outputFilename}");
-                
             }
         }
     }

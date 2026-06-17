@@ -387,7 +387,7 @@ public class FitnessEvaluator
     // =====================================================================
     public void AnalyzeViolations(Genome genome)
     {
-        Console.WriteLine("\n=== DIAGNOZA BŁĘDÓW (-31) ===");
+        Console.WriteLine("\n=== DIAGNOZA BŁĘDÓW ===");
         DecodeGenome(genome.Genes);
 
         Array.Clear(_teacherMatrix, 0, _teacherMatrix.Length);

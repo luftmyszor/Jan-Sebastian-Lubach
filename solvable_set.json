@@ -1,0 +1,170 @@
+{
+  "metadata": {
+    "university": "Akademia AI",
+    "department": "Wydział Testowy",
+    "program": "Informatyka",
+    "academic_year": "2025/2026",
+    "semester": "zimowy",
+    "description": "Gwarantowany w 100% rozwiązywalny zbiór testowy do weryfikacji Algorytmu Genetycznego."
+  },
+  "instructors": [
+    {
+      "id": "I01",
+      "name": "prof. dr hab. Idealny Nauczyciel",
+      "preferences_text": "Jestem dostępny zawsze i wszędzie.",
+      "subjects": ["MAT-DYSK", "PROG-POD", "BAZY-DAN", "SIECI"],
+      "hours_per_semester": 200,
+      "available_slots": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34],
+      "preferred_slots": [1, 2, 3, 8, 9, 10, 15, 16, 17]
+    },
+    {
+      "id": "I02",
+      "name": "dr Nieskończona Cierpliwość",
+      "preferences_text": "Mogę uczyć od rana do wieczora.",
+      "subjects": ["MAT-DYSK", "PROG-POD", "BAZY-DAN", "SIECI"],
+      "hours_per_semester": 200,
+      "available_slots": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34],
+      "preferred_slots": []
+    },
+    {
+      "id": "I03",
+      "name": "mgr Zawsze Dostępny",
+      "preferences_text": "Brak ograniczeń czasowych.",
+      "subjects": ["MAT-DYSK", "PROG-POD", "BAZY-DAN", "SIECI"],
+      "hours_per_semester": 200,
+      "available_slots": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34],
+      "preferred_slots": []
+    },
+    {
+      "id": "I04",
+      "name": "inż. Niezłomny Wykładowca",
+      "preferences_text": "Każda godzina mi pasuje.",
+      "subjects": ["MAT-DYSK", "PROG-POD", "BAZY-DAN", "SIECI"],
+      "hours_per_semester": 200,
+      "available_slots": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34],
+      "preferred_slots": []
+    }
+  ],
+  "rooms": [
+    {
+      "id": "W01",
+      "name": "Aula Idealna",
+      "type": "lecture_hall",
+      "capacity": 100
+    },
+    {
+      "id": "K01",
+      "name": "Laboratorium Pustki",
+      "type": "computer_lab",
+      "capacity": 100
+    },
+    {
+      "id": "C01",
+      "name": "Sala Ćwiczeń Nieskończoności",
+      "type": "exercise_room",
+      "capacity": 100
+    },
+    {
+      "id": "S01",
+      "name": "Laboratorium Sprzętowe X",
+      "type": "hardware_lab",
+      "capacity": 100
+    }
+  ],
+  "student_groups": [
+    {
+      "id": "GR1",
+      "name": "Grupa Testowa 1",
+      "year": 1,
+      "students": 20
+    },
+    {
+      "id": "GR2",
+      "name": "Grupa Testowa 2",
+      "year": 1,
+      "students": 20
+    }
+  ],
+  "courses": [
+    {
+      "id": "C001",
+      "subject_id": "MAT-DYSK",
+      "name": "Matematyka Dyskretna",
+      "type": "lecture",
+      "group_id": "GR1",
+      "students": 20,
+      "hours_per_semester": 28,
+      "required_room_type": "lecture_hall"
+    },
+    {
+      "id": "C002",
+      "subject_id": "MAT-DYSK",
+      "name": "Matematyka Dyskretna",
+      "type": "exercise",
+      "group_id": "GR1",
+      "students": 20,
+      "hours_per_semester": 28,
+      "required_room_type": "exercise_room"
+    },
+    {
+      "id": "C003",
+      "subject_id": "PROG-POD",
+      "name": "Podstawy Programowania",
+      "type": "lab",
+      "group_id": "GR1",
+      "students": 20,
+      "hours_per_semester": 28,
+      "required_room_type": "computer_lab"
+    },
+    {
+      "id": "C004",
+      "subject_id": "BAZY-DAN",
+      "name": "Bazy Danych",
+      "type": "project",
+      "group_id": "GR1",
+      "students": 20,
+      "hours_per_semester": 28,
+      "required_room_type": "exercise_room"
+    },
+    {
+      "id": "C005",
+      "subject_id": "SIECI",
+      "name": "Sieci Komputerowe",
+      "type": "lecture",
+      "group_id": "GR2",
+      "students": 20,
+      "hours_per_semester": 28,
+      "required_room_type": "lecture_hall"
+    },
+    {
+      "id": "C006",
+      "subject_id": "SIECI",
+      "name": "Sieci Komputerowe",
+      "type": "lab",
+      "group_id": "GR2",
+      "students": 20,
+      "hours_per_semester": 28,
+      "required_room_type": "hardware_lab"
+    },
+    {
+      "id": "C007",
+      "subject_id": "PROG-POD",
+      "name": "Podstawy Programowania",
+      "type": "lab",
+      "group_id": "GR2",
+      "students": 20,
+      "hours_per_semester": 28,
+      "required_room_type": "computer_lab"
+    },
+    {
+      "id": "C008",
+      "subject_id": "MAT-DYSK",
+      "name": "Matematyka Dyskretna",
+      "type": "exercise",
+      "group_id": "GR2",
+      "students": 20,
+      "hours_per_semester": 28,
+      "required_room_type": "exercise_room"
+    }
+  ]
+}
