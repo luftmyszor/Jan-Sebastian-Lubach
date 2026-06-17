@@ -76,7 +76,7 @@ public class FitnessEvaluator
         _teacherHours = new int[mapper.T_max];
     }
     
-    public float Evaluate(Genome genome)
+    public float Evaluate(Genome genome, bool optimizeSoftOnBroken = false)
     {
         if (genome.BrokenGenesMask != null)
             Array.Clear(genome.BrokenGenesMask, 0, genome.BrokenGenesMask.Length);
@@ -175,12 +175,23 @@ public class FitnessEvaluator
             }
         }
 
-        if (hardViolations == 0)
+        if (hardViolations > 0)
         {
-            return CalculateSoftFitness(); // Passed empty, accesses _decodedBuffer natively
+            if (optimizeSoftOnBroken)
+            {
+                // Soft fitness to zazwyczaj od 500 do 1000 punktów.
+                // Dzielimy to przez 2000, uzyskując mały ułamek (np. 0.35).
+                // Wynik: -31 naruszeń + 0.35 za dobre ułożenie = -30.65
+                // Dzięki temu algorytm nadal woli -30 niż -31, ale spośród planów 
+                // z -31 wybierze ten, który ma lepsze okienka i preferencje!
+                float softBonus = CalculateSoftFitness() / 1000f;
+                return -hardViolations + softBonus;
+            }
+            
+            return -hardViolations;
         }
 
-        return hardViolations * HARD_PENALTY;
+        return CalculateSoftFitness();
     }
 
     private void DecodeGenome(int[] genes)

@@ -1,74 +1,2162 @@
 [
   {
-    "dzien": "Wtorek",
-    "godzina": "15:00 - 16:30",
-    "sala": "W01",
-    "wykladowca": "I04",
+    "dzien": "\u015Aroda",
+    "godzina": "08:00 - 09:30",
+    "sala": "W07",
+    "wykladowca": "I55",
     "przedmiot": "Matematyka Dyskretna",
-    "klasa": "GR1",
+    "klasa": "IS1A",
     "typ": "lecture"
   },
   {
     "dzien": "\u015Aroda",
-    "godzina": "09:45 - 11:15",
-    "sala": "C01",
-    "wykladowca": "I02",
+    "godzina": "15:00 - 16:30",
+    "sala": "C17",
+    "wykladowca": "I48",
     "przedmiot": "Matematyka Dyskretna",
-    "klasa": "GR1",
+    "klasa": "IS1A",
     "typ": "exercise"
   },
   {
-    "dzien": "Pi\u0105tek",
+    "dzien": "\u015Aroda",
+    "godzina": "13:15 - 14:45",
+    "sala": "W13",
+    "wykladowca": "I35",
+    "przedmiot": "Matematyka Dyskretna",
+    "klasa": "IS1B",
+    "typ": "lecture"
+  },
+  {
+    "dzien": "Poniedzia\u0142ek",
+    "godzina": "11:30 - 13:00",
+    "sala": "C12",
+    "wykladowca": "I22",
+    "przedmiot": "Matematyka Dyskretna",
+    "klasa": "IS1B",
+    "typ": "exercise"
+  },
+  {
+    "dzien": "Poniedzia\u0142ek",
     "godzina": "15:00 - 16:30",
-    "sala": "K01",
-    "wykladowca": "I01",
-    "przedmiot": "Podstawy Programowania",
-    "klasa": "GR1",
-    "typ": "lab"
+    "sala": "W08",
+    "wykladowca": "I28",
+    "przedmiot": "Matematyka Dyskretna",
+    "klasa": "IS1C",
+    "typ": "lecture"
+  },
+  {
+    "dzien": "Pi\u0105tek",
+    "godzina": "08:00 - 09:30",
+    "sala": "C29",
+    "wykladowca": "I35",
+    "przedmiot": "Matematyka Dyskretna",
+    "klasa": "IS1C",
+    "typ": "exercise"
   },
   {
     "dzien": "Poniedzia\u0142ek",
     "godzina": "16:45 - 18:15",
-    "sala": "C01",
-    "wykladowca": "I01",
-    "przedmiot": "Bazy Danych",
-    "klasa": "GR1",
-    "typ": "project"
-  },
-  {
-    "dzien": "Czwartek",
-    "godzina": "09:45 - 11:15",
-    "sala": "W01",
-    "wykladowca": "I03",
-    "przedmiot": "Sieci Komputerowe",
-    "klasa": "GR2",
+    "sala": "W10",
+    "wykladowca": "I09",
+    "przedmiot": "Matematyka Dyskretna",
+    "klasa": "IS1D",
     "typ": "lecture"
   },
   {
     "dzien": "Wtorek",
+    "godzina": "15:00 - 16:30",
+    "sala": "C13",
+    "wykladowca": "I22",
+    "przedmiot": "Matematyka Dyskretna",
+    "klasa": "IS1D",
+    "typ": "exercise"
+  },
+  {
+    "dzien": "Pi\u0105tek",
+    "godzina": "16:45 - 18:15",
+    "sala": "W10",
+    "wykladowca": "I22",
+    "przedmiot": "Matematyka Dyskretna",
+    "klasa": "IS1E",
+    "typ": "lecture"
+  },
+  {
+    "dzien": "Czwartek",
+    "godzina": "13:15 - 14:45",
+    "sala": "C30",
+    "wykladowca": "I41",
+    "przedmiot": "Matematyka Dyskretna",
+    "klasa": "IS1E",
+    "typ": "exercise"
+  },
+  {
+    "dzien": "Czwartek",
+    "godzina": "16:45 - 18:15",
+    "sala": "W13",
+    "wykladowca": "I55",
+    "przedmiot": "Matematyka Dyskretna",
+    "klasa": "IS1F",
+    "typ": "lecture"
+  },
+  {
+    "dzien": "Wtorek",
+    "godzina": "18:30 - 20:00",
+    "sala": "C25",
+    "wykladowca": "I55",
+    "przedmiot": "Matematyka Dyskretna",
+    "klasa": "IS1F",
+    "typ": "exercise"
+  },
+  {
+    "dzien": "\u015Aroda",
+    "godzina": "09:45 - 11:15",
+    "sala": "W09",
+    "wykladowca": "I48",
+    "przedmiot": "Matematyka Dyskretna",
+    "klasa": "IS1G",
+    "typ": "lecture"
+  },
+  {
+    "dzien": "\u015Aroda",
     "godzina": "11:30 - 13:00",
-    "sala": "S01",
-    "wykladowca": "I03",
-    "przedmiot": "Sieci Komputerowe",
-    "klasa": "GR2",
+    "sala": "C26",
+    "wykladowca": "I22",
+    "przedmiot": "Matematyka Dyskretna",
+    "klasa": "IS1G",
+    "typ": "exercise"
+  },
+  {
+    "dzien": "Poniedzia\u0142ek",
+    "godzina": "18:30 - 20:00",
+    "sala": "W08",
+    "wykladowca": "I55",
+    "przedmiot": "Matematyka Dyskretna",
+    "klasa": "IS1H",
+    "typ": "lecture"
+  },
+  {
+    "dzien": "Czwartek",
+    "godzina": "15:00 - 16:30",
+    "sala": "C11",
+    "wykladowca": "I35",
+    "przedmiot": "Matematyka Dyskretna",
+    "klasa": "IS1H",
+    "typ": "exercise"
+  },
+  {
+    "dzien": "Pi\u0105tek",
+    "godzina": "18:30 - 20:00",
+    "sala": "C02",
+    "wykladowca": "I27",
+    "przedmiot": "Podstawy Programowania",
+    "klasa": "IS1A",
+    "typ": "project"
+  },
+  {
+    "dzien": "Poniedzia\u0142ek",
+    "godzina": "18:30 - 20:00",
+    "sala": "K18",
+    "wykladowca": "I26",
+    "przedmiot": "Podstawy Programowania",
+    "klasa": "IS1A",
+    "typ": "lab"
+  },
+  {
+    "dzien": "Czwartek",
+    "godzina": "16:45 - 18:15",
+    "sala": "C12",
+    "wykladowca": "I27",
+    "przedmiot": "Podstawy Programowania",
+    "klasa": "IS1B",
+    "typ": "project"
+  },
+  {
+    "dzien": "Wtorek",
+    "godzina": "18:30 - 20:00",
+    "sala": "K21",
+    "wykladowca": "I39",
+    "przedmiot": "Podstawy Programowania",
+    "klasa": "IS1B",
+    "typ": "lab"
+  },
+  {
+    "dzien": "Czwartek",
+    "godzina": "18:30 - 20:00",
+    "sala": "C14",
+    "wykladowca": "I10",
+    "przedmiot": "Podstawy Programowania",
+    "klasa": "IS1C",
+    "typ": "project"
+  },
+  {
+    "dzien": "Pi\u0105tek",
+    "godzina": "08:00 - 09:30",
+    "sala": "K07",
+    "wykladowca": "I59",
+    "przedmiot": "Podstawy Programowania",
+    "klasa": "IS1C",
+    "typ": "lab"
+  },
+  {
+    "dzien": "Pi\u0105tek",
+    "godzina": "15:00 - 16:30",
+    "sala": "C03",
+    "wykladowca": "I32",
+    "przedmiot": "Podstawy Programowania",
+    "klasa": "IS1D",
+    "typ": "project"
+  },
+  {
+    "dzien": "\u015Aroda",
+    "godzina": "15:00 - 16:30",
+    "sala": "K07",
+    "wykladowca": "I51",
+    "przedmiot": "Podstawy Programowania",
+    "klasa": "IS1D",
     "typ": "lab"
   },
   {
     "dzien": "Poniedzia\u0142ek",
-    "godzina": "08:00 - 09:30",
-    "sala": "K01",
-    "wykladowca": "I03",
+    "godzina": "18:30 - 20:00",
+    "sala": "C08",
+    "wykladowca": "I23",
     "przedmiot": "Podstawy Programowania",
-    "klasa": "GR2",
+    "klasa": "IS1E",
+    "typ": "project"
+  },
+  {
+    "dzien": "Pi\u0105tek",
+    "godzina": "09:45 - 11:15",
+    "sala": "K03",
+    "wykladowca": "I08",
+    "przedmiot": "Podstawy Programowania",
+    "klasa": "IS1E",
+    "typ": "lab"
+  },
+  {
+    "dzien": "Wtorek",
+    "godzina": "15:00 - 16:30",
+    "sala": "C08",
+    "wykladowca": "I27",
+    "przedmiot": "Podstawy Programowania",
+    "klasa": "IS1F",
+    "typ": "project"
+  },
+  {
+    "dzien": "Poniedzia\u0142ek",
+    "godzina": "18:30 - 20:00",
+    "sala": "K14",
+    "wykladowca": "I10",
+    "przedmiot": "Podstawy Programowania",
+    "klasa": "IS1F",
+    "typ": "lab"
+  },
+  {
+    "dzien": "\u015Aroda",
+    "godzina": "18:30 - 20:00",
+    "sala": "C26",
+    "wykladowca": "I26",
+    "przedmiot": "Podstawy Programowania",
+    "klasa": "IS1G",
+    "typ": "project"
+  },
+  {
+    "dzien": "Wtorek",
+    "godzina": "13:15 - 14:45",
+    "sala": "K19",
+    "wykladowca": "I14",
+    "przedmiot": "Podstawy Programowania",
+    "klasa": "IS1G",
+    "typ": "lab"
+  },
+  {
+    "dzien": "Wtorek",
+    "godzina": "16:45 - 18:15",
+    "sala": "C09",
+    "wykladowca": "I59",
+    "przedmiot": "Podstawy Programowania",
+    "klasa": "IS1H",
+    "typ": "project"
+  },
+  {
+    "dzien": "Czwartek",
+    "godzina": "13:15 - 14:45",
+    "sala": "K10",
+    "wykladowca": "I39",
+    "przedmiot": "Podstawy Programowania",
+    "klasa": "IS1H",
+    "typ": "lab"
+  },
+  {
+    "dzien": "Poniedzia\u0142ek",
+    "godzina": "15:00 - 16:30",
+    "sala": "C06",
+    "wykladowca": "I12",
+    "przedmiot": "Architektura Komputer\u00F3w",
+    "klasa": "IS1A",
+    "typ": "project"
+  },
+  {
+    "dzien": "Wtorek",
+    "godzina": "16:45 - 18:15",
+    "sala": "K07",
+    "wykladowca": "I45",
+    "przedmiot": "Architektura Komputer\u00F3w",
+    "klasa": "IS1A",
+    "typ": "lab"
+  },
+  {
+    "dzien": "Czwartek",
+    "godzina": "09:45 - 11:15",
+    "sala": "C25",
+    "wykladowca": "I13",
+    "przedmiot": "Architektura Komputer\u00F3w",
+    "klasa": "IS1B",
+    "typ": "project"
+  },
+  {
+    "dzien": "Wtorek",
+    "godzina": "08:00 - 09:30",
+    "sala": "K06",
+    "wykladowca": "I37",
+    "przedmiot": "Architektura Komputer\u00F3w",
+    "klasa": "IS1B",
+    "typ": "lab"
+  },
+  {
+    "dzien": "\u015Aroda",
+    "godzina": "08:00 - 09:30",
+    "sala": "C31",
+    "wykladowca": "I12",
+    "przedmiot": "Architektura Komputer\u00F3w",
+    "klasa": "IS1C",
+    "typ": "project"
+  },
+  {
+    "dzien": "Poniedzia\u0142ek",
+    "godzina": "16:45 - 18:15",
+    "sala": "K04",
+    "wykladowca": "I24",
+    "przedmiot": "Architektura Komputer\u00F3w",
+    "klasa": "IS1C",
+    "typ": "lab"
+  },
+  {
+    "dzien": "Poniedzia\u0142ek",
+    "godzina": "09:45 - 11:15",
+    "sala": "C15",
+    "wykladowca": "I17",
+    "przedmiot": "Architektura Komputer\u00F3w",
+    "klasa": "IS1D",
+    "typ": "project"
+  },
+  {
+    "dzien": "\u015Aroda",
+    "godzina": "11:30 - 13:00",
+    "sala": "K01",
+    "wykladowca": "I12",
+    "przedmiot": "Architektura Komputer\u00F3w",
+    "klasa": "IS1D",
+    "typ": "lab"
+  },
+  {
+    "dzien": "Czwartek",
+    "godzina": "16:45 - 18:15",
+    "sala": "C13",
+    "wykladowca": "I13",
+    "przedmiot": "Architektura Komputer\u00F3w",
+    "klasa": "IS1E",
+    "typ": "project"
+  },
+  {
+    "dzien": "\u015Aroda",
+    "godzina": "18:30 - 20:00",
+    "sala": "K04",
+    "wykladowca": "I24",
+    "przedmiot": "Architektura Komputer\u00F3w",
+    "klasa": "IS1E",
+    "typ": "lab"
+  },
+  {
+    "dzien": "\u015Aroda",
+    "godzina": "08:00 - 09:30",
+    "sala": "C05",
+    "wykladowca": "I57",
+    "przedmiot": "Architektura Komputer\u00F3w",
+    "klasa": "IS1F",
+    "typ": "project"
+  },
+  {
+    "dzien": "Pi\u0105tek",
+    "godzina": "18:30 - 20:00",
+    "sala": "K22",
+    "wykladowca": "I24",
+    "przedmiot": "Architektura Komputer\u00F3w",
+    "klasa": "IS1F",
+    "typ": "lab"
+  },
+  {
+    "dzien": "Wtorek",
+    "godzina": "16:45 - 18:15",
+    "sala": "C04",
+    "wykladowca": "I17",
+    "przedmiot": "Architektura Komputer\u00F3w",
+    "klasa": "IS1G",
+    "typ": "project"
+  },
+  {
+    "dzien": "Poniedzia\u0142ek",
+    "godzina": "08:00 - 09:30",
+    "sala": "K08",
+    "wykladowca": "I13",
+    "przedmiot": "Architektura Komputer\u00F3w",
+    "klasa": "IS1G",
+    "typ": "lab"
+  },
+  {
+    "dzien": "Wtorek",
+    "godzina": "08:00 - 09:30",
+    "sala": "C24",
+    "wykladowca": "I45",
+    "przedmiot": "Architektura Komputer\u00F3w",
+    "klasa": "IS1H",
+    "typ": "project"
+  },
+  {
+    "dzien": "Wtorek",
+    "godzina": "09:45 - 11:15",
+    "sala": "K24",
+    "wykladowca": "I57",
+    "przedmiot": "Architektura Komputer\u00F3w",
+    "klasa": "IS1H",
     "typ": "lab"
   },
   {
     "dzien": "\u015Aroda",
     "godzina": "13:15 - 14:45",
-    "sala": "C01",
+    "sala": "W15",
+    "wykladowca": "I55",
+    "przedmiot": "Programowanie Obiektowe",
+    "klasa": "IS2A",
+    "typ": "lecture"
+  },
+  {
+    "dzien": "Wtorek",
+    "godzina": "11:30 - 13:00",
+    "sala": "K24",
+    "wykladowca": "I26",
+    "przedmiot": "Programowanie Obiektowe",
+    "klasa": "IS2A",
+    "typ": "lab"
+  },
+  {
+    "dzien": "Poniedzia\u0142ek",
+    "godzina": "13:15 - 14:45",
+    "sala": "W01",
+    "wykladowca": "I36",
+    "przedmiot": "Programowanie Obiektowe",
+    "klasa": "IS2B",
+    "typ": "lecture"
+  },
+  {
+    "dzien": "\u015Aroda",
+    "godzina": "15:00 - 16:30",
+    "sala": "K15",
+    "wykladowca": "I55",
+    "przedmiot": "Programowanie Obiektowe",
+    "klasa": "IS2B",
+    "typ": "lab"
+  },
+  {
+    "dzien": "Wtorek",
+    "godzina": "18:30 - 20:00",
+    "sala": "W14",
+    "wykladowca": "I01",
+    "przedmiot": "Programowanie Obiektowe",
+    "klasa": "IS2C",
+    "typ": "lecture"
+  },
+  {
+    "dzien": "Czwartek",
+    "godzina": "15:00 - 16:30",
+    "sala": "K02",
+    "wykladowca": "I36",
+    "przedmiot": "Programowanie Obiektowe",
+    "klasa": "IS2C",
+    "typ": "lab"
+  },
+  {
+    "dzien": "Poniedzia\u0142ek",
+    "godzina": "15:00 - 16:30",
+    "sala": "W11",
+    "wykladowca": "I55",
+    "przedmiot": "Programowanie Obiektowe",
+    "klasa": "IS2D",
+    "typ": "lecture"
+  },
+  {
+    "dzien": "Czwartek",
+    "godzina": "15:00 - 16:30",
+    "sala": "K05",
+    "wykladowca": "I32",
+    "przedmiot": "Programowanie Obiektowe",
+    "klasa": "IS2D",
+    "typ": "lab"
+  },
+  {
+    "dzien": "Pi\u0105tek",
+    "godzina": "09:45 - 11:15",
+    "sala": "W09",
+    "wykladowca": "I12",
+    "przedmiot": "Programowanie Obiektowe",
+    "klasa": "IS2E",
+    "typ": "lecture"
+  },
+  {
+    "dzien": "\u015Aroda",
+    "godzina": "15:00 - 16:30",
+    "sala": "K08",
+    "wykladowca": "I36",
+    "przedmiot": "Programowanie Obiektowe",
+    "klasa": "IS2E",
+    "typ": "lab"
+  },
+  {
+    "dzien": "\u015Aroda",
+    "godzina": "08:00 - 09:30",
+    "sala": "W03",
+    "wykladowca": "I26",
+    "przedmiot": "Programowanie Obiektowe",
+    "klasa": "IS2F",
+    "typ": "lecture"
+  },
+  {
+    "dzien": "\u015Aroda",
+    "godzina": "09:45 - 11:15",
+    "sala": "K17",
+    "wykladowca": "I55",
+    "przedmiot": "Programowanie Obiektowe",
+    "klasa": "IS2F",
+    "typ": "lab"
+  },
+  {
+    "dzien": "Pi\u0105tek",
+    "godzina": "08:00 - 09:30",
+    "sala": "W06",
+    "wykladowca": "I12",
+    "przedmiot": "Programowanie Obiektowe",
+    "klasa": "IS2G",
+    "typ": "lecture"
+  },
+  {
+    "dzien": "Poniedzia\u0142ek",
+    "godzina": "09:45 - 11:15",
+    "sala": "K09",
+    "wykladowca": "I55",
+    "przedmiot": "Programowanie Obiektowe",
+    "klasa": "IS2G",
+    "typ": "lab"
+  },
+  {
+    "dzien": "\u015Aroda",
+    "godzina": "11:30 - 13:00",
+    "sala": "W03",
+    "wykladowca": "I32",
+    "przedmiot": "Programowanie Obiektowe",
+    "klasa": "IS2H",
+    "typ": "lecture"
+  },
+  {
+    "dzien": "Poniedzia\u0142ek",
+    "godzina": "16:45 - 18:15",
+    "sala": "K27",
+    "wykladowca": "I55",
+    "przedmiot": "Programowanie Obiektowe",
+    "klasa": "IS2H",
+    "typ": "lab"
+  },
+  {
+    "dzien": "Czwartek",
+    "godzina": "18:30 - 20:00",
+    "sala": "C25",
+    "wykladowca": "I55",
+    "przedmiot": "Algorytmika",
+    "klasa": "IS2A",
+    "typ": "project"
+  },
+  {
+    "dzien": "\u015Aroda",
+    "godzina": "11:30 - 13:00",
+    "sala": "C29",
+    "wykladowca": "I26",
+    "przedmiot": "Algorytmika",
+    "klasa": "IS2A",
+    "typ": "exercise"
+  },
+  {
+    "dzien": "Czwartek",
+    "godzina": "09:45 - 11:15",
+    "sala": "C15",
+    "wykladowca": "I55",
+    "przedmiot": "Algorytmika",
+    "klasa": "IS2B",
+    "typ": "project"
+  },
+  {
+    "dzien": "Poniedzia\u0142ek",
+    "godzina": "15:00 - 16:30",
+    "sala": "C17",
+    "wykladowca": "I21",
+    "przedmiot": "Algorytmika",
+    "klasa": "IS2B",
+    "typ": "exercise"
+  },
+  {
+    "dzien": "Czwartek",
+    "godzina": "16:45 - 18:15",
+    "sala": "C07",
+    "wykladowca": "I35",
+    "przedmiot": "Algorytmika",
+    "klasa": "IS2C",
+    "typ": "project"
+  },
+  {
+    "dzien": "Poniedzia\u0142ek",
+    "godzina": "08:00 - 09:30",
+    "sala": "C06",
+    "wykladowca": "I55",
+    "przedmiot": "Algorytmika",
+    "klasa": "IS2C",
+    "typ": "exercise"
+  },
+  {
+    "dzien": "Wtorek",
+    "godzina": "13:15 - 14:45",
+    "sala": "C18",
+    "wykladowca": "I35",
+    "przedmiot": "Algorytmika",
+    "klasa": "IS2D",
+    "typ": "project"
+  },
+  {
+    "dzien": "Wtorek",
+    "godzina": "08:00 - 09:30",
+    "sala": "C13",
+    "wykladowca": "I39",
+    "przedmiot": "Algorytmika",
+    "klasa": "IS2D",
+    "typ": "exercise"
+  },
+  {
+    "dzien": "Czwartek",
+    "godzina": "08:00 - 09:30",
+    "sala": "C31",
+    "wykladowca": "I26",
+    "przedmiot": "Algorytmika",
+    "klasa": "IS2E",
+    "typ": "project"
+  },
+  {
+    "dzien": "Wtorek",
+    "godzina": "16:45 - 18:15",
+    "sala": "C11",
+    "wykladowca": "I49",
+    "przedmiot": "Algorytmika",
+    "klasa": "IS2E",
+    "typ": "exercise"
+  },
+  {
+    "dzien": "\u015Aroda",
+    "godzina": "15:00 - 16:30",
+    "sala": "C31",
+    "wykladowca": "I35",
+    "przedmiot": "Algorytmika",
+    "klasa": "IS2F",
+    "typ": "project"
+  },
+  {
+    "dzien": "Czwartek",
+    "godzina": "09:45 - 11:15",
+    "sala": "C12",
+    "wykladowca": "I41",
+    "przedmiot": "Algorytmika",
+    "klasa": "IS2F",
+    "typ": "exercise"
+  },
+  {
+    "dzien": "Poniedzia\u0142ek",
+    "godzina": "13:15 - 14:45",
+    "sala": "C24",
+    "wykladowca": "I26",
+    "przedmiot": "Algorytmika",
+    "klasa": "IS2G",
+    "typ": "project"
+  },
+  {
+    "dzien": "\u015Aroda",
+    "godzina": "13:15 - 14:45",
+    "sala": "C18",
+    "wykladowca": "I41",
+    "przedmiot": "Algorytmika",
+    "klasa": "IS2G",
+    "typ": "exercise"
+  },
+  {
+    "dzien": "Pi\u0105tek",
+    "godzina": "18:30 - 20:00",
+    "sala": "C32",
+    "wykladowca": "I49",
+    "przedmiot": "Algorytmika",
+    "klasa": "IS2H",
+    "typ": "project"
+  },
+  {
+    "dzien": "Pi\u0105tek",
+    "godzina": "16:45 - 18:15",
+    "sala": "C23",
+    "wykladowca": "I21",
+    "przedmiot": "Algorytmika",
+    "klasa": "IS2H",
+    "typ": "exercise"
+  },
+  {
+    "dzien": "Czwartek",
+    "godzina": "15:00 - 16:30",
+    "sala": "C20",
+    "wykladowca": "I59",
+    "przedmiot": "Bazy Danych",
+    "klasa": "IS2A",
+    "typ": "project"
+  },
+  {
+    "dzien": "Czwartek",
+    "godzina": "08:00 - 09:30",
+    "sala": "K09",
+    "wykladowca": "I36",
+    "przedmiot": "Bazy Danych",
+    "klasa": "IS2A",
+    "typ": "lab"
+  },
+  {
+    "dzien": "Wtorek",
+    "godzina": "13:15 - 14:45",
+    "sala": "C19",
+    "wykladowca": "I32",
+    "przedmiot": "Bazy Danych",
+    "klasa": "IS2B",
+    "typ": "project"
+  },
+  {
+    "dzien": "Wtorek",
+    "godzina": "09:45 - 11:15",
+    "sala": "K21",
+    "wykladowca": "I50",
+    "przedmiot": "Bazy Danych",
+    "klasa": "IS2B",
+    "typ": "lab"
+  },
+  {
+    "dzien": "Pi\u0105tek",
+    "godzina": "13:15 - 14:45",
+    "sala": "C07",
+    "wykladowca": "I32",
+    "przedmiot": "Bazy Danych",
+    "klasa": "IS2C",
+    "typ": "project"
+  },
+  {
+    "dzien": "Poniedzia\u0142ek",
+    "godzina": "16:45 - 18:15",
+    "sala": "K24",
+    "wykladowca": "I36",
+    "przedmiot": "Bazy Danych",
+    "klasa": "IS2C",
+    "typ": "lab"
+  },
+  {
+    "dzien": "Poniedzia\u0142ek",
+    "godzina": "11:30 - 13:00",
+    "sala": "C30",
+    "wykladowca": "I32",
+    "przedmiot": "Bazy Danych",
+    "klasa": "IS2D",
+    "typ": "project"
+  },
+  {
+    "dzien": "\u015Aroda",
+    "godzina": "11:30 - 13:00",
+    "sala": "K10",
+    "wykladowca": "I56",
+    "przedmiot": "Bazy Danych",
+    "klasa": "IS2D",
+    "typ": "lab"
+  },
+  {
+    "dzien": "Poniedzia\u0142ek",
+    "godzina": "16:45 - 18:15",
+    "sala": "C24",
+    "wykladowca": "I32",
+    "przedmiot": "Bazy Danych",
+    "klasa": "IS2E",
+    "typ": "project"
+  },
+  {
+    "dzien": "Czwartek",
+    "godzina": "16:45 - 18:15",
+    "sala": "K02",
+    "wykladowca": "I56",
+    "przedmiot": "Bazy Danych",
+    "klasa": "IS2E",
+    "typ": "lab"
+  },
+  {
+    "dzien": "Wtorek",
+    "godzina": "11:30 - 13:00",
+    "sala": "C09",
+    "wykladowca": "I56",
+    "przedmiot": "Bazy Danych",
+    "klasa": "IS2F",
+    "typ": "project"
+  },
+  {
+    "dzien": "Poniedzia\u0142ek",
+    "godzina": "13:15 - 14:45",
+    "sala": "K05",
+    "wykladowca": "I09",
+    "przedmiot": "Bazy Danych",
+    "klasa": "IS2F",
+    "typ": "lab"
+  },
+  {
+    "dzien": "Poniedzia\u0142ek",
+    "godzina": "15:00 - 16:30",
+    "sala": "C16",
+    "wykladowca": "I36",
+    "przedmiot": "Bazy Danych",
+    "klasa": "IS2G",
+    "typ": "project"
+  },
+  {
+    "dzien": "Wtorek",
+    "godzina": "13:15 - 14:45",
+    "sala": "K15",
+    "wykladowca": "I30",
+    "przedmiot": "Bazy Danych",
+    "klasa": "IS2G",
+    "typ": "lab"
+  },
+  {
+    "dzien": "Wtorek",
+    "godzina": "15:00 - 16:30",
+    "sala": "C29",
+    "wykladowca": "I09",
+    "przedmiot": "Bazy Danych",
+    "klasa": "IS2H",
+    "typ": "project"
+  },
+  {
+    "dzien": "Czwartek",
+    "godzina": "16:45 - 18:15",
+    "sala": "K04",
+    "wykladowca": "I36",
+    "przedmiot": "Bazy Danych",
+    "klasa": "IS2H",
+    "typ": "lab"
+  },
+  {
+    "dzien": "Pi\u0105tek",
+    "godzina": "15:00 - 16:30",
+    "sala": "C15",
+    "wykladowca": "I29",
+    "przedmiot": "Sieci Komputerowe",
+    "klasa": "IS3A",
+    "typ": "project"
+  },
+  {
+    "dzien": "Wtorek",
+    "godzina": "08:00 - 09:30",
+    "sala": "K08",
+    "wykladowca": "I47",
+    "przedmiot": "Sieci Komputerowe",
+    "klasa": "IS3A",
+    "typ": "lab"
+  },
+  {
+    "dzien": "Czwartek",
+    "godzina": "18:30 - 20:00",
+    "sala": "C09",
+    "wykladowca": "I33",
+    "przedmiot": "Sieci Komputerowe",
+    "klasa": "IS3B",
+    "typ": "project"
+  },
+  {
+    "dzien": "Wtorek",
+    "godzina": "16:45 - 18:15",
+    "sala": "K27",
+    "wykladowca": "I05",
+    "przedmiot": "Sieci Komputerowe",
+    "klasa": "IS3B",
+    "typ": "lab"
+  },
+  {
+    "dzien": "Wtorek",
+    "godzina": "13:15 - 14:45",
+    "sala": "C25",
+    "wykladowca": "I19",
+    "przedmiot": "Sieci Komputerowe",
+    "klasa": "IS3C",
+    "typ": "project"
+  },
+  {
+    "dzien": "Pi\u0105tek",
+    "godzina": "11:30 - 13:00",
+    "sala": "K29",
+    "wykladowca": "I33",
+    "przedmiot": "Sieci Komputerowe",
+    "klasa": "IS3C",
+    "typ": "lab"
+  },
+  {
+    "dzien": "Czwartek",
+    "godzina": "08:00 - 09:30",
+    "sala": "C29",
+    "wykladowca": "I18",
+    "przedmiot": "Sieci Komputerowe",
+    "klasa": "IS3D",
+    "typ": "project"
+  },
+  {
+    "dzien": "Pi\u0105tek",
+    "godzina": "08:00 - 09:30",
+    "sala": "K22",
+    "wykladowca": "I24",
+    "przedmiot": "Sieci Komputerowe",
+    "klasa": "IS3D",
+    "typ": "lab"
+  },
+  {
+    "dzien": "Wtorek",
+    "godzina": "09:45 - 11:15",
+    "sala": "C17",
+    "wykladowca": "I37",
+    "przedmiot": "Sieci Komputerowe",
+    "klasa": "IS3E",
+    "typ": "project"
+  },
+  {
+    "dzien": "\u015Aroda",
+    "godzina": "11:30 - 13:00",
+    "sala": "K08",
+    "wykladowca": "I57",
+    "przedmiot": "Sieci Komputerowe",
+    "klasa": "IS3E",
+    "typ": "lab"
+  },
+  {
+    "dzien": "Wtorek",
+    "godzina": "08:00 - 09:30",
+    "sala": "C31",
+    "wykladowca": "I19",
+    "przedmiot": "Sieci Komputerowe",
+    "klasa": "IS3F",
+    "typ": "project"
+  },
+  {
+    "dzien": "Pi\u0105tek",
+    "godzina": "15:00 - 16:30",
+    "sala": "K28",
+    "wykladowca": "I21",
+    "przedmiot": "Sieci Komputerowe",
+    "klasa": "IS3F",
+    "typ": "lab"
+  },
+  {
+    "dzien": "\u015Aroda",
+    "godzina": "16:45 - 18:15",
+    "sala": "C14",
+    "wykladowca": "I37",
+    "przedmiot": "Sieci Komputerowe",
+    "klasa": "IS3G",
+    "typ": "project"
+  },
+  {
+    "dzien": "Czwartek",
+    "godzina": "08:00 - 09:30",
+    "sala": "K02",
+    "wykladowca": "I53",
+    "przedmiot": "Sieci Komputerowe",
+    "klasa": "IS3G",
+    "typ": "lab"
+  },
+  {
+    "dzien": "Wtorek",
+    "godzina": "15:00 - 16:30",
+    "sala": "C19",
+    "wykladowca": "I21",
+    "przedmiot": "Sieci Komputerowe",
+    "klasa": "IS3H",
+    "typ": "project"
+  },
+  {
+    "dzien": "Czwartek",
+    "godzina": "13:15 - 14:45",
+    "sala": "K12",
+    "wykladowca": "I47",
+    "przedmiot": "Sieci Komputerowe",
+    "klasa": "IS3H",
+    "typ": "lab"
+  },
+  {
+    "dzien": "\u015Aroda",
+    "godzina": "08:00 - 09:30",
+    "sala": "C17",
+    "wykladowca": "I15",
+    "przedmiot": "Systemy Operacyjne",
+    "klasa": "IS3A",
+    "typ": "project"
+  },
+  {
+    "dzien": "Czwartek",
+    "godzina": "08:00 - 09:30",
+    "sala": "S02",
+    "wykladowca": "I15",
+    "przedmiot": "Systemy Operacyjne",
+    "klasa": "IS3A",
+    "typ": "lab"
+  },
+  {
+    "dzien": "Wtorek",
+    "godzina": "18:30 - 20:00",
+    "sala": "C14",
+    "wykladowca": "I15",
+    "przedmiot": "Systemy Operacyjne",
+    "klasa": "IS3B",
+    "typ": "project"
+  },
+  {
+    "dzien": "Wtorek",
+    "godzina": "15:00 - 16:30",
+    "sala": "S15",
+    "wykladowca": "I11",
+    "przedmiot": "Systemy Operacyjne",
+    "klasa": "IS3B",
+    "typ": "lab"
+  },
+  {
+    "dzien": "Poniedzia\u0142ek",
+    "godzina": "16:45 - 18:15",
+    "sala": "C14",
+    "wykladowca": "I11",
+    "przedmiot": "Systemy Operacyjne",
+    "klasa": "IS3C",
+    "typ": "project"
+  },
+  {
+    "dzien": "Poniedzia\u0142ek",
+    "godzina": "11:30 - 13:00",
+    "sala": "S06",
+    "wykladowca": "I40",
+    "przedmiot": "Systemy Operacyjne",
+    "klasa": "IS3C",
+    "typ": "lab"
+  },
+  {
+    "dzien": "\u015Aroda",
+    "godzina": "16:45 - 18:15",
+    "sala": "C06",
+    "wykladowca": "I51",
+    "przedmiot": "Systemy Operacyjne",
+    "klasa": "IS3D",
+    "typ": "project"
+  },
+  {
+    "dzien": "\u015Aroda",
+    "godzina": "18:30 - 20:00",
+    "sala": "S03",
+    "wykladowca": "I40",
+    "przedmiot": "Systemy Operacyjne",
+    "klasa": "IS3D",
+    "typ": "lab"
+  },
+  {
+    "dzien": "Poniedzia\u0142ek",
+    "godzina": "13:15 - 14:45",
+    "sala": "C25",
+    "wykladowca": "I60",
+    "przedmiot": "Systemy Operacyjne",
+    "klasa": "IS3E",
+    "typ": "project"
+  },
+  {
+    "dzien": "Poniedzia\u0142ek",
+    "godzina": "16:45 - 18:15",
+    "sala": "S02",
+    "wykladowca": "I37",
+    "przedmiot": "Systemy Operacyjne",
+    "klasa": "IS3E",
+    "typ": "lab"
+  },
+  {
+    "dzien": "Czwartek",
+    "godzina": "11:30 - 13:00",
+    "sala": "C10",
+    "wykladowca": "I45",
+    "przedmiot": "Systemy Operacyjne",
+    "klasa": "IS3F",
+    "typ": "project"
+  },
+  {
+    "dzien": "Poniedzia\u0142ek",
+    "godzina": "08:00 - 09:30",
+    "sala": "S17",
+    "wykladowca": "I11",
+    "przedmiot": "Systemy Operacyjne",
+    "klasa": "IS3F",
+    "typ": "lab"
+  },
+  {
+    "dzien": "Pi\u0105tek",
+    "godzina": "09:45 - 11:15",
+    "sala": "C31",
+    "wykladowca": "I51",
+    "przedmiot": "Systemy Operacyjne",
+    "klasa": "IS3G",
+    "typ": "project"
+  },
+  {
+    "dzien": "Wtorek",
+    "godzina": "13:15 - 14:45",
+    "sala": "S09",
+    "wykladowca": "I45",
+    "przedmiot": "Systemy Operacyjne",
+    "klasa": "IS3G",
+    "typ": "lab"
+  },
+  {
+    "dzien": "\u015Aroda",
+    "godzina": "08:00 - 09:30",
+    "sala": "C03",
+    "wykladowca": "I37",
+    "przedmiot": "Systemy Operacyjne",
+    "klasa": "IS3H",
+    "typ": "project"
+  },
+  {
+    "dzien": "Pi\u0105tek",
+    "godzina": "15:00 - 16:30",
+    "sala": "S20",
+    "wykladowca": "I40",
+    "przedmiot": "Systemy Operacyjne",
+    "klasa": "IS3H",
+    "typ": "lab"
+  },
+  {
+    "dzien": "Wtorek",
+    "godzina": "15:00 - 16:30",
+    "sala": "W02",
+    "wykladowca": "I43",
+    "przedmiot": "In\u017Cynieria Oprogramowania",
+    "klasa": "IS3A",
+    "typ": "lecture"
+  },
+  {
+    "dzien": "Poniedzia\u0142ek",
+    "godzina": "11:30 - 13:00",
+    "sala": "C13",
+    "wykladowca": "I36",
+    "przedmiot": "In\u017Cynieria Oprogramowania",
+    "klasa": "IS3A",
+    "typ": "project"
+  },
+  {
+    "dzien": "Pi\u0105tek",
+    "godzina": "08:00 - 09:30",
+    "sala": "W15",
+    "wykladowca": "I08",
+    "przedmiot": "In\u017Cynieria Oprogramowania",
+    "klasa": "IS3B",
+    "typ": "lecture"
+  },
+  {
+    "dzien": "Poniedzia\u0142ek",
+    "godzina": "18:30 - 20:00",
+    "sala": "C28",
+    "wykladowca": "I13",
+    "przedmiot": "In\u017Cynieria Oprogramowania",
+    "klasa": "IS3B",
+    "typ": "project"
+  },
+  {
+    "dzien": "Pi\u0105tek",
+    "godzina": "09:45 - 11:15",
+    "sala": "W16",
+    "wykladowca": "I25",
+    "przedmiot": "In\u017Cynieria Oprogramowania",
+    "klasa": "IS3C",
+    "typ": "lecture"
+  },
+  {
+    "dzien": "Wtorek",
+    "godzina": "16:45 - 18:15",
+    "sala": "C30",
+    "wykladowca": "I36",
+    "przedmiot": "In\u017Cynieria Oprogramowania",
+    "klasa": "IS3C",
+    "typ": "project"
+  },
+  {
+    "dzien": "Czwartek",
+    "godzina": "11:30 - 13:00",
+    "sala": "W16",
+    "wykladowca": "I13",
+    "przedmiot": "In\u017Cynieria Oprogramowania",
+    "klasa": "IS3D",
+    "typ": "lecture"
+  },
+  {
+    "dzien": "Wtorek",
+    "godzina": "16:45 - 18:15",
+    "sala": "C31",
+    "wykladowca": "I10",
+    "przedmiot": "In\u017Cynieria Oprogramowania",
+    "klasa": "IS3D",
+    "typ": "project"
+  },
+  {
+    "dzien": "Wtorek",
+    "godzina": "18:30 - 20:00",
+    "sala": "W12",
+    "wykladowca": "I36",
+    "przedmiot": "In\u017Cynieria Oprogramowania",
+    "klasa": "IS3E",
+    "typ": "lecture"
+  },
+  {
+    "dzien": "Pi\u0105tek",
+    "godzina": "09:45 - 11:15",
+    "sala": "C04",
+    "wykladowca": "I49",
+    "przedmiot": "In\u017Cynieria Oprogramowania",
+    "klasa": "IS3E",
+    "typ": "project"
+  },
+  {
+    "dzien": "Wtorek",
+    "godzina": "18:30 - 20:00",
+    "sala": "W09",
+    "wykladowca": "I49",
+    "przedmiot": "In\u017Cynieria Oprogramowania",
+    "klasa": "IS3F",
+    "typ": "lecture"
+  },
+  {
+    "dzien": "\u015Aroda",
+    "godzina": "08:00 - 09:30",
+    "sala": "C06",
     "wykladowca": "I03",
-    "przedmiot": "Matematyka Dyskretna",
-    "klasa": "GR2",
+    "przedmiot": "In\u017Cynieria Oprogramowania",
+    "klasa": "IS3F",
+    "typ": "project"
+  },
+  {
+    "dzien": "Czwartek",
+    "godzina": "15:00 - 16:30",
+    "sala": "W08",
+    "wykladowca": "I56",
+    "przedmiot": "In\u017Cynieria Oprogramowania",
+    "klasa": "IS3G",
+    "typ": "lecture"
+  },
+  {
+    "dzien": "\u015Aroda",
+    "godzina": "11:30 - 13:00",
+    "sala": "C16",
+    "wykladowca": "I53",
+    "przedmiot": "In\u017Cynieria Oprogramowania",
+    "klasa": "IS3G",
+    "typ": "project"
+  },
+  {
+    "dzien": "Poniedzia\u0142ek",
+    "godzina": "11:30 - 13:00",
+    "sala": "W02",
+    "wykladowca": "I21",
+    "przedmiot": "In\u017Cynieria Oprogramowania",
+    "klasa": "IS3H",
+    "typ": "lecture"
+  },
+  {
+    "dzien": "Czwartek",
+    "godzina": "15:00 - 16:30",
+    "sala": "C05",
+    "wykladowca": "I10",
+    "przedmiot": "In\u017Cynieria Oprogramowania",
+    "klasa": "IS3H",
+    "typ": "project"
+  },
+  {
+    "dzien": "Poniedzia\u0142ek",
+    "godzina": "13:15 - 14:45",
+    "sala": "C28",
+    "wykladowca": "I01",
+    "przedmiot": "Uczenie Maszynowe",
+    "klasa": "IS4A",
+    "typ": "project"
+  },
+  {
+    "dzien": "Wtorek",
+    "godzina": "08:00 - 09:30",
+    "sala": "K19",
+    "wykladowca": "I28",
+    "przedmiot": "Uczenie Maszynowe",
+    "klasa": "IS4A",
+    "typ": "lab"
+  },
+  {
+    "dzien": "\u015Aroda",
+    "godzina": "18:30 - 20:00",
+    "sala": "C08",
+    "wykladowca": "I01",
+    "przedmiot": "Uczenie Maszynowe",
+    "klasa": "IS4B",
+    "typ": "project"
+  },
+  {
+    "dzien": "Wtorek",
+    "godzina": "11:30 - 13:00",
+    "sala": "K16",
+    "wykladowca": "I54",
+    "przedmiot": "Uczenie Maszynowe",
+    "klasa": "IS4B",
+    "typ": "lab"
+  },
+  {
+    "dzien": "Poniedzia\u0142ek",
+    "godzina": "16:45 - 18:15",
+    "sala": "C26",
+    "wykladowca": "I13",
+    "przedmiot": "Uczenie Maszynowe",
+    "klasa": "IS4C",
+    "typ": "project"
+  },
+  {
+    "dzien": "\u015Aroda",
+    "godzina": "18:30 - 20:00",
+    "sala": "K09",
+    "wykladowca": "I04",
+    "przedmiot": "Uczenie Maszynowe",
+    "klasa": "IS4C",
+    "typ": "lab"
+  },
+  {
+    "dzien": "\u015Aroda",
+    "godzina": "15:00 - 16:30",
+    "sala": "C16",
+    "wykladowca": "I40",
+    "przedmiot": "Uczenie Maszynowe",
+    "klasa": "IS4D",
+    "typ": "project"
+  },
+  {
+    "dzien": "Czwartek",
+    "godzina": "08:00 - 09:30",
+    "sala": "K12",
+    "wykladowca": "I60",
+    "przedmiot": "Uczenie Maszynowe",
+    "klasa": "IS4D",
+    "typ": "lab"
+  },
+  {
+    "dzien": "Pi\u0105tek",
+    "godzina": "13:15 - 14:45",
+    "sala": "C06",
+    "wykladowca": "I40",
+    "przedmiot": "Uczenie Maszynowe",
+    "klasa": "IS4E",
+    "typ": "project"
+  },
+  {
+    "dzien": "Czwartek",
+    "godzina": "11:30 - 13:00",
+    "sala": "K26",
+    "wykladowca": "I54",
+    "przedmiot": "Uczenie Maszynowe",
+    "klasa": "IS4E",
+    "typ": "lab"
+  },
+  {
+    "dzien": "Pi\u0105tek",
+    "godzina": "16:45 - 18:15",
+    "sala": "C14",
+    "wykladowca": "I11",
+    "przedmiot": "Uczenie Maszynowe",
+    "klasa": "IS4F",
+    "typ": "project"
+  },
+  {
+    "dzien": "Poniedzia\u0142ek",
+    "godzina": "16:45 - 18:15",
+    "sala": "K10",
+    "wykladowca": "I40",
+    "przedmiot": "Uczenie Maszynowe",
+    "klasa": "IS4F",
+    "typ": "lab"
+  },
+  {
+    "dzien": "\u015Aroda",
+    "godzina": "15:00 - 16:30",
+    "sala": "C06",
+    "wykladowca": "I01",
+    "przedmiot": "Uczenie Maszynowe",
+    "klasa": "IS4G",
+    "typ": "project"
+  },
+  {
+    "dzien": "Poniedzia\u0142ek",
+    "godzina": "09:45 - 11:15",
+    "sala": "K06",
+    "wykladowca": "I34",
+    "przedmiot": "Uczenie Maszynowe",
+    "klasa": "IS4G",
+    "typ": "lab"
+  },
+  {
+    "dzien": "Wtorek",
+    "godzina": "15:00 - 16:30",
+    "sala": "C27",
+    "wykladowca": "I04",
+    "przedmiot": "Uczenie Maszynowe",
+    "klasa": "IS4H",
+    "typ": "project"
+  },
+  {
+    "dzien": "Czwartek",
+    "godzina": "18:30 - 20:00",
+    "sala": "K01",
+    "wykladowca": "I54",
+    "przedmiot": "Uczenie Maszynowe",
+    "klasa": "IS4H",
+    "typ": "lab"
+  },
+  {
+    "dzien": "Wtorek",
+    "godzina": "18:30 - 20:00",
+    "sala": "C31",
+    "wykladowca": "I33",
+    "przedmiot": "Bezpiecze\u0144stwo System\u00F3w",
+    "klasa": "IS4A",
+    "typ": "project"
+  },
+  {
+    "dzien": "Wtorek",
+    "godzina": "11:30 - 13:00",
+    "sala": "K05",
+    "wykladowca": "I15",
+    "przedmiot": "Bezpiecze\u0144stwo System\u00F3w",
+    "klasa": "IS4A",
+    "typ": "lab"
+  },
+  {
+    "dzien": "Poniedzia\u0142ek",
+    "godzina": "18:30 - 20:00",
+    "sala": "C30",
+    "wykladowca": "I15",
+    "przedmiot": "Bezpiecze\u0144stwo System\u00F3w",
+    "klasa": "IS4B",
+    "typ": "project"
+  },
+  {
+    "dzien": "Czwartek",
+    "godzina": "13:15 - 14:45",
+    "sala": "K28",
+    "wykladowca": "I53",
+    "przedmiot": "Bezpiecze\u0144stwo System\u00F3w",
+    "klasa": "IS4B",
+    "typ": "lab"
+  },
+  {
+    "dzien": "\u015Aroda",
+    "godzina": "11:30 - 13:00",
+    "sala": "C17",
+    "wykladowca": "I15",
+    "przedmiot": "Bezpiecze\u0144stwo System\u00F3w",
+    "klasa": "IS4C",
+    "typ": "project"
+  },
+  {
+    "dzien": "Czwartek",
+    "godzina": "08:00 - 09:30",
+    "sala": "K21",
+    "wykladowca": "I06",
+    "przedmiot": "Bezpiecze\u0144stwo System\u00F3w",
+    "klasa": "IS4C",
+    "typ": "lab"
+  },
+  {
+    "dzien": "Czwartek",
+    "godzina": "16:45 - 18:15",
+    "sala": "C26",
+    "wykladowca": "I06",
+    "przedmiot": "Bezpiecze\u0144stwo System\u00F3w",
+    "klasa": "IS4D",
+    "typ": "project"
+  },
+  {
+    "dzien": "\u015Aroda",
+    "godzina": "11:30 - 13:00",
+    "sala": "K29",
+    "wykladowca": "I07",
+    "przedmiot": "Bezpiecze\u0144stwo System\u00F3w",
+    "klasa": "IS4D",
+    "typ": "lab"
+  },
+  {
+    "dzien": "Poniedzia\u0142ek",
+    "godzina": "11:30 - 13:00",
+    "sala": "C14",
+    "wykladowca": "I07",
+    "przedmiot": "Bezpiecze\u0144stwo System\u00F3w",
+    "klasa": "IS4E",
+    "typ": "project"
+  },
+  {
+    "dzien": "Wtorek",
+    "godzina": "11:30 - 13:00",
+    "sala": "K11",
+    "wykladowca": "I13",
+    "przedmiot": "Bezpiecze\u0144stwo System\u00F3w",
+    "klasa": "IS4E",
+    "typ": "lab"
+  },
+  {
+    "dzien": "Pi\u0105tek",
+    "godzina": "08:00 - 09:30",
+    "sala": "C01",
+    "wykladowca": "I06",
+    "przedmiot": "Bezpiecze\u0144stwo System\u00F3w",
+    "klasa": "IS4F",
+    "typ": "project"
+  },
+  {
+    "dzien": "Wtorek",
+    "godzina": "15:00 - 16:30",
+    "sala": "K17",
+    "wykladowca": "I13",
+    "przedmiot": "Bezpiecze\u0144stwo System\u00F3w",
+    "klasa": "IS4F",
+    "typ": "lab"
+  },
+  {
+    "dzien": "Czwartek",
+    "godzina": "16:45 - 18:15",
+    "sala": "C20",
+    "wykladowca": "I15",
+    "przedmiot": "Bezpiecze\u0144stwo System\u00F3w",
+    "klasa": "IS4G",
+    "typ": "project"
+  },
+  {
+    "dzien": "Poniedzia\u0142ek",
+    "godzina": "08:00 - 09:30",
+    "sala": "K12",
+    "wykladowca": "I47",
+    "przedmiot": "Bezpiecze\u0144stwo System\u00F3w",
+    "klasa": "IS4G",
+    "typ": "lab"
+  },
+  {
+    "dzien": "Poniedzia\u0142ek",
+    "godzina": "16:45 - 18:15",
+    "sala": "C30",
+    "wykladowca": "I07",
+    "przedmiot": "Bezpiecze\u0144stwo System\u00F3w",
+    "klasa": "IS4H",
+    "typ": "project"
+  },
+  {
+    "dzien": "Wtorek",
+    "godzina": "13:15 - 14:45",
+    "sala": "K01",
+    "wykladowca": "I60",
+    "przedmiot": "Bezpiecze\u0144stwo System\u00F3w",
+    "klasa": "IS4H",
+    "typ": "lab"
+  },
+  {
+    "dzien": "Wtorek",
+    "godzina": "16:45 - 18:15",
+    "sala": "W01",
+    "wykladowca": "I03",
+    "przedmiot": "Statystyka i Rachunek Prawdopodobie\u0144stwa",
+    "klasa": "IS4A",
+    "typ": "lecture"
+  },
+  {
+    "dzien": "Wtorek",
+    "godzina": "09:45 - 11:15",
+    "sala": "C13",
+    "wykladowca": "I05",
+    "przedmiot": "Statystyka i Rachunek Prawdopodobie\u0144stwa",
+    "klasa": "IS4A",
+    "typ": "exercise"
+  },
+  {
+    "dzien": "Poniedzia\u0142ek",
+    "godzina": "08:00 - 09:30",
+    "sala": "W05",
+    "wykladowca": "I12",
+    "przedmiot": "Statystyka i Rachunek Prawdopodobie\u0144stwa",
+    "klasa": "IS4B",
+    "typ": "lecture"
+  },
+  {
+    "dzien": "Poniedzia\u0142ek",
+    "godzina": "16:45 - 18:15",
+    "sala": "C04",
+    "wykladowca": "I22",
+    "przedmiot": "Statystyka i Rachunek Prawdopodobie\u0144stwa",
+    "klasa": "IS4B",
+    "typ": "exercise"
+  },
+  {
+    "dzien": "Czwartek",
+    "godzina": "16:45 - 18:15",
+    "sala": "W07",
+    "wykladowca": "I05",
+    "przedmiot": "Statystyka i Rachunek Prawdopodobie\u0144stwa",
+    "klasa": "IS4C",
+    "typ": "lecture"
+  },
+  {
+    "dzien": "Pi\u0105tek",
+    "godzina": "09:45 - 11:15",
+    "sala": "C24",
+    "wykladowca": "I03",
+    "przedmiot": "Statystyka i Rachunek Prawdopodobie\u0144stwa",
+    "klasa": "IS4C",
+    "typ": "exercise"
+  },
+  {
+    "dzien": "\u015Aroda",
+    "godzina": "18:30 - 20:00",
+    "sala": "W15",
+    "wykladowca": "I03",
+    "przedmiot": "Statystyka i Rachunek Prawdopodobie\u0144stwa",
+    "klasa": "IS4D",
+    "typ": "lecture"
+  },
+  {
+    "dzien": "Czwartek",
+    "godzina": "09:45 - 11:15",
+    "sala": "C02",
+    "wykladowca": "I05",
+    "przedmiot": "Statystyka i Rachunek Prawdopodobie\u0144stwa",
+    "klasa": "IS4D",
+    "typ": "exercise"
+  },
+  {
+    "dzien": "Wtorek",
+    "godzina": "08:00 - 09:30",
+    "sala": "W08",
+    "wykladowca": "I58",
+    "przedmiot": "Statystyka i Rachunek Prawdopodobie\u0144stwa",
+    "klasa": "IS4E",
+    "typ": "lecture"
+  },
+  {
+    "dzien": "Poniedzia\u0142ek",
+    "godzina": "15:00 - 16:30",
+    "sala": "C23",
+    "wykladowca": "I31",
+    "przedmiot": "Statystyka i Rachunek Prawdopodobie\u0144stwa",
+    "klasa": "IS4E",
+    "typ": "exercise"
+  },
+  {
+    "dzien": "\u015Aroda",
+    "godzina": "18:30 - 20:00",
+    "sala": "W04",
+    "wykladowca": "I31",
+    "przedmiot": "Statystyka i Rachunek Prawdopodobie\u0144stwa",
+    "klasa": "IS4F",
+    "typ": "lecture"
+  },
+  {
+    "dzien": "Poniedzia\u0142ek",
+    "godzina": "09:45 - 11:15",
+    "sala": "C21",
+    "wykladowca": "I12",
+    "przedmiot": "Statystyka i Rachunek Prawdopodobie\u0144stwa",
+    "klasa": "IS4F",
+    "typ": "exercise"
+  },
+  {
+    "dzien": "Pi\u0105tek",
+    "godzina": "11:30 - 13:00",
+    "sala": "W06",
+    "wykladowca": "I03",
+    "przedmiot": "Statystyka i Rachunek Prawdopodobie\u0144stwa",
+    "klasa": "IS4G",
+    "typ": "lecture"
+  },
+  {
+    "dzien": "Wtorek",
+    "godzina": "08:00 - 09:30",
+    "sala": "C03",
+    "wykladowca": "I34",
+    "przedmiot": "Statystyka i Rachunek Prawdopodobie\u0144stwa",
+    "klasa": "IS4G",
+    "typ": "exercise"
+  },
+  {
+    "dzien": "\u015Aroda",
+    "godzina": "08:00 - 09:30",
+    "sala": "W13",
+    "wykladowca": "I34",
+    "przedmiot": "Statystyka i Rachunek Prawdopodobie\u0144stwa",
+    "klasa": "IS4H",
+    "typ": "lecture"
+  },
+  {
+    "dzien": "Pi\u0105tek",
+    "godzina": "11:30 - 13:00",
+    "sala": "C03",
+    "wykladowca": "I34",
+    "przedmiot": "Statystyka i Rachunek Prawdopodobie\u0144stwa",
+    "klasa": "IS4H",
+    "typ": "exercise"
+  },
+  {
+    "dzien": "Pi\u0105tek",
+    "godzina": "11:30 - 13:00",
+    "sala": "C04",
+    "wykladowca": "I26",
+    "przedmiot": "Grafika Komputerowa",
+    "klasa": "IS5A",
+    "typ": "project"
+  },
+  {
+    "dzien": "Poniedzia\u0142ek",
+    "godzina": "13:15 - 14:45",
+    "sala": "K24",
+    "wykladowca": "I54",
+    "przedmiot": "Grafika Komputerowa",
+    "klasa": "IS5A",
+    "typ": "lab"
+  },
+  {
+    "dzien": "Wtorek",
+    "godzina": "08:00 - 09:30",
+    "sala": "C30",
+    "wykladowca": "I26",
+    "przedmiot": "Grafika Komputerowa",
+    "klasa": "IS5B",
+    "typ": "project"
+  },
+  {
+    "dzien": "Pi\u0105tek",
+    "godzina": "08:00 - 09:30",
+    "sala": "K02",
+    "wykladowca": "I26",
+    "przedmiot": "Grafika Komputerowa",
+    "klasa": "IS5B",
+    "typ": "lab"
+  },
+  {
+    "dzien": "Wtorek",
+    "godzina": "13:15 - 14:45",
+    "sala": "C02",
+    "wykladowca": "I02",
+    "przedmiot": "Grafika Komputerowa",
+    "klasa": "IS5C",
+    "typ": "project"
+  },
+  {
+    "dzien": "Poniedzia\u0142ek",
+    "godzina": "16:45 - 18:15",
+    "sala": "K12",
+    "wykladowca": "I52",
+    "przedmiot": "Grafika Komputerowa",
+    "klasa": "IS5C",
+    "typ": "lab"
+  },
+  {
+    "dzien": "Wtorek",
+    "godzina": "15:00 - 16:30",
+    "sala": "C01",
+    "wykladowca": "I26",
+    "przedmiot": "Grafika Komputerowa",
+    "klasa": "IS5D",
+    "typ": "project"
+  },
+  {
+    "dzien": "Poniedzia\u0142ek",
+    "godzina": "13:15 - 14:45",
+    "sala": "K07",
+    "wykladowca": "I02",
+    "przedmiot": "Grafika Komputerowa",
+    "klasa": "IS5D",
+    "typ": "lab"
+  },
+  {
+    "dzien": "Czwartek",
+    "godzina": "13:15 - 14:45",
+    "sala": "C21",
+    "wykladowca": "I44",
+    "przedmiot": "Grafika Komputerowa",
+    "klasa": "IS5E",
+    "typ": "project"
+  },
+  {
+    "dzien": "\u015Aroda",
+    "godzina": "09:45 - 11:15",
+    "sala": "K24",
+    "wykladowca": "I44",
+    "przedmiot": "Grafika Komputerowa",
+    "klasa": "IS5E",
+    "typ": "lab"
+  },
+  {
+    "dzien": "Czwartek",
+    "godzina": "15:00 - 16:30",
+    "sala": "C16",
+    "wykladowca": "I02",
+    "przedmiot": "Grafika Komputerowa",
+    "klasa": "IS5F",
+    "typ": "project"
+  },
+  {
+    "dzien": "Poniedzia\u0142ek",
+    "godzina": "15:00 - 16:30",
+    "sala": "K27",
+    "wykladowca": "I26",
+    "przedmiot": "Grafika Komputerowa",
+    "klasa": "IS5F",
+    "typ": "lab"
+  },
+  {
+    "dzien": "Poniedzia\u0142ek",
+    "godzina": "08:00 - 09:30",
+    "sala": "C24",
+    "wykladowca": "I44",
+    "przedmiot": "Grafika Komputerowa",
+    "klasa": "IS5G",
+    "typ": "project"
+  },
+  {
+    "dzien": "Czwartek",
+    "godzina": "16:45 - 18:15",
+    "sala": "K28",
+    "wykladowca": "I54",
+    "przedmiot": "Grafika Komputerowa",
+    "klasa": "IS5G",
+    "typ": "lab"
+  },
+  {
+    "dzien": "Czwartek",
+    "godzina": "09:45 - 11:15",
+    "sala": "C19",
+    "wykladowca": "I44",
+    "przedmiot": "Grafika Komputerowa",
+    "klasa": "IS5H",
+    "typ": "project"
+  },
+  {
+    "dzien": "Czwartek",
+    "godzina": "13:15 - 14:45",
+    "sala": "K06",
+    "wykladowca": "I02",
+    "przedmiot": "Grafika Komputerowa",
+    "klasa": "IS5H",
+    "typ": "lab"
+  },
+  {
+    "dzien": "Wtorek",
+    "godzina": "16:45 - 18:15",
+    "sala": "C03",
+    "wykladowca": "I06",
+    "przedmiot": "Przetwarzanie Sygna\u0142\u00F3w",
+    "klasa": "IS5A",
+    "typ": "project"
+  },
+  {
+    "dzien": "Poniedzia\u0142ek",
+    "godzina": "15:00 - 16:30",
+    "sala": "K22",
+    "wykladowca": "I23",
+    "przedmiot": "Przetwarzanie Sygna\u0142\u00F3w",
+    "klasa": "IS5A",
+    "typ": "lab"
+  },
+  {
+    "dzien": "\u015Aroda",
+    "godzina": "09:45 - 11:15",
+    "sala": "C04",
+    "wykladowca": "I38",
+    "przedmiot": "Przetwarzanie Sygna\u0142\u00F3w",
+    "klasa": "IS5B",
+    "typ": "project"
+  },
+  {
+    "dzien": "Wtorek",
+    "godzina": "16:45 - 18:15",
+    "sala": "K02",
+    "wykladowca": "I38",
+    "przedmiot": "Przetwarzanie Sygna\u0142\u00F3w",
+    "klasa": "IS5B",
+    "typ": "lab"
+  },
+  {
+    "dzien": "Pi\u0105tek",
+    "godzina": "15:00 - 16:30",
+    "sala": "C14",
+    "wykladowca": "I46",
+    "przedmiot": "Przetwarzanie Sygna\u0142\u00F3w",
+    "klasa": "IS5C",
+    "typ": "project"
+  },
+  {
+    "dzien": "Wtorek",
+    "godzina": "13:15 - 14:45",
+    "sala": "K03",
+    "wykladowca": "I46",
+    "przedmiot": "Przetwarzanie Sygna\u0142\u00F3w",
+    "klasa": "IS5C",
+    "typ": "lab"
+  },
+  {
+    "dzien": "Czwartek",
+    "godzina": "13:15 - 14:45",
+    "sala": "C23",
+    "wykladowca": "I46",
+    "przedmiot": "Przetwarzanie Sygna\u0142\u00F3w",
+    "klasa": "IS5D",
+    "typ": "project"
+  },
+  {
+    "dzien": "Wtorek",
+    "godzina": "18:30 - 20:00",
+    "sala": "K04",
+    "wykladowca": "I46",
+    "przedmiot": "Przetwarzanie Sygna\u0142\u00F3w",
+    "klasa": "IS5D",
+    "typ": "lab"
+  },
+  {
+    "dzien": "Wtorek",
+    "godzina": "11:30 - 13:00",
+    "sala": "C17",
+    "wykladowca": "I23",
+    "przedmiot": "Przetwarzanie Sygna\u0142\u00F3w",
+    "klasa": "IS5E",
+    "typ": "project"
+  },
+  {
+    "dzien": "Poniedzia\u0142ek",
+    "godzina": "09:45 - 11:15",
+    "sala": "K12",
+    "wykladowca": "I23",
+    "przedmiot": "Przetwarzanie Sygna\u0142\u00F3w",
+    "klasa": "IS5E",
+    "typ": "lab"
+  },
+  {
+    "dzien": "\u015Aroda",
+    "godzina": "11:30 - 13:00",
+    "sala": "C12",
+    "wykladowca": "I42",
+    "przedmiot": "Przetwarzanie Sygna\u0142\u00F3w",
+    "klasa": "IS5F",
+    "typ": "project"
+  },
+  {
+    "dzien": "Pi\u0105tek",
+    "godzina": "13:15 - 14:45",
+    "sala": "K14",
+    "wykladowca": "I38",
+    "przedmiot": "Przetwarzanie Sygna\u0142\u00F3w",
+    "klasa": "IS5F",
+    "typ": "lab"
+  },
+  {
+    "dzien": "\u015Aroda",
+    "godzina": "13:15 - 14:45",
+    "sala": "C14",
+    "wykladowca": "I42",
+    "przedmiot": "Przetwarzanie Sygna\u0142\u00F3w",
+    "klasa": "IS5G",
+    "typ": "project"
+  },
+  {
+    "dzien": "Pi\u0105tek",
+    "godzina": "15:00 - 16:30",
+    "sala": "K19",
+    "wykladowca": "I38",
+    "przedmiot": "Przetwarzanie Sygna\u0142\u00F3w",
+    "klasa": "IS5G",
+    "typ": "lab"
+  },
+  {
+    "dzien": "Poniedzia\u0142ek",
+    "godzina": "15:00 - 16:30",
+    "sala": "C11",
+    "wykladowca": "I38",
+    "przedmiot": "Przetwarzanie Sygna\u0142\u00F3w",
+    "klasa": "IS5H",
+    "typ": "project"
+  },
+  {
+    "dzien": "Poniedzia\u0142ek",
+    "godzina": "09:45 - 11:15",
+    "sala": "K01",
+    "wykladowca": "I42",
+    "przedmiot": "Przetwarzanie Sygna\u0142\u00F3w",
+    "klasa": "IS5H",
+    "typ": "lab"
+  },
+  {
+    "dzien": "Wtorek",
+    "godzina": "15:00 - 16:30",
+    "sala": "W06",
+    "wykladowca": "I28",
+    "przedmiot": "Analiza Numeryczna",
+    "klasa": "IS5A",
+    "typ": "lecture"
+  },
+  {
+    "dzien": "Poniedzia\u0142ek",
+    "godzina": "11:30 - 13:00",
+    "sala": "C32",
+    "wykladowca": "I30",
+    "przedmiot": "Analiza Numeryczna",
+    "klasa": "IS5A",
+    "typ": "exercise"
+  },
+  {
+    "dzien": "Poniedzia\u0142ek",
+    "godzina": "09:45 - 11:15",
+    "sala": "W12",
+    "wykladowca": "I25",
+    "przedmiot": "Analiza Numeryczna",
+    "klasa": "IS5B",
+    "typ": "lecture"
+  },
+  {
+    "dzien": "Czwartek",
+    "godzina": "16:45 - 18:15",
+    "sala": "C14",
+    "wykladowca": "I22",
+    "przedmiot": "Analiza Numeryczna",
+    "klasa": "IS5B",
+    "typ": "exercise"
+  },
+  {
+    "dzien": "Wtorek",
+    "godzina": "09:45 - 11:15",
+    "sala": "W03",
+    "wykladowca": "I58",
+    "przedmiot": "Analiza Numeryczna",
+    "klasa": "IS5C",
+    "typ": "lecture"
+  },
+  {
+    "dzien": "Czwartek",
+    "godzina": "13:15 - 14:45",
+    "sala": "C28",
+    "wykladowca": "I30",
+    "przedmiot": "Analiza Numeryczna",
+    "klasa": "IS5C",
+    "typ": "exercise"
+  },
+  {
+    "dzien": "\u015Aroda",
+    "godzina": "11:30 - 13:00",
+    "sala": "W09",
+    "wykladowca": "I28",
+    "przedmiot": "Analiza Numeryczna",
+    "klasa": "IS5D",
+    "typ": "lecture"
+  },
+  {
+    "dzien": "Wtorek",
+    "godzina": "09:45 - 11:15",
+    "sala": "C12",
+    "wykladowca": "I38",
+    "przedmiot": "Analiza Numeryczna",
+    "klasa": "IS5D",
+    "typ": "exercise"
+  },
+  {
+    "dzien": "Czwartek",
+    "godzina": "15:00 - 16:30",
+    "sala": "W06",
+    "wykladowca": "I30",
+    "przedmiot": "Analiza Numeryczna",
+    "klasa": "IS5E",
+    "typ": "lecture"
+  },
+  {
+    "dzien": "Poniedzia\u0142ek",
+    "godzina": "11:30 - 13:00",
+    "sala": "C07",
+    "wykladowca": "I16",
+    "przedmiot": "Analiza Numeryczna",
+    "klasa": "IS5E",
+    "typ": "exercise"
+  },
+  {
+    "dzien": "Wtorek",
+    "godzina": "13:15 - 14:45",
+    "sala": "W10",
+    "wykladowca": "I22",
+    "przedmiot": "Analiza Numeryczna",
+    "klasa": "IS5F",
+    "typ": "lecture"
+  },
+  {
+    "dzien": "Wtorek",
+    "godzina": "11:30 - 13:00",
+    "sala": "C16",
+    "wykladowca": "I16",
+    "przedmiot": "Analiza Numeryczna",
+    "klasa": "IS5F",
+    "typ": "exercise"
+  },
+  {
+    "dzien": "Wtorek",
+    "godzina": "18:30 - 20:00",
+    "sala": "W04",
+    "wykladowca": "I42",
+    "przedmiot": "Analiza Numeryczna",
+    "klasa": "IS5G",
+    "typ": "lecture"
+  },
+  {
+    "dzien": "Wtorek",
+    "godzina": "08:00 - 09:30",
+    "sala": "C16",
+    "wykladowca": "I38",
+    "przedmiot": "Analiza Numeryczna",
+    "klasa": "IS5G",
+    "typ": "exercise"
+  },
+  {
+    "dzien": "Wtorek",
+    "godzina": "09:45 - 11:15",
+    "sala": "W15",
+    "wykladowca": "I29",
+    "przedmiot": "Analiza Numeryczna",
+    "klasa": "IS5H",
+    "typ": "lecture"
+  },
+  {
+    "dzien": "Wtorek",
+    "godzina": "16:45 - 18:15",
+    "sala": "C16",
+    "wykladowca": "I25",
+    "przedmiot": "Analiza Numeryczna",
+    "klasa": "IS5H",
     "typ": "exercise"
   }
 ]

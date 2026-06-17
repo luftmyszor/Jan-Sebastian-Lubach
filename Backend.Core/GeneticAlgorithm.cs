@@ -27,6 +27,7 @@ public class GeneticAlgorithm : IDisposable
     {
         return _population[0].Genes;
     }
+    private bool _safeguardActive = false;
 
     public GeneticAlgorithm(int popSize, float mutRate, int elite, TimetableMapper mapper, int immigrationCount = 50, float parentSelectionPercentage = 0.3f)
     {
@@ -44,6 +45,7 @@ public class GeneticAlgorithm : IDisposable
         
         // ZMIANA 2: Inicjalizacja ThreadLocal. Każdy wątek CPU dostanie swoją własną kopię ewaluatora.
         _evaluators = new ThreadLocal<FitnessEvaluator>(() => new FitnessEvaluator(mapper)); 
+        
         
         InitializePopulation();
     }
@@ -85,9 +87,8 @@ public class GeneticAlgorithm : IDisposable
         {
             if (!_population[i].IsEvaluated)
             {
-                // ZMIANA 3: Użycie _evaluators.Value gwarantuje absolutne bezpieczeństwo wątków
-                var fitness = _evaluators.Value.Evaluate(_population[i]);
-
+                // Przekazujemy stan Safeguard do ewaluatora
+                var fitness = _evaluators.Value.Evaluate(_population[i], _safeguardActive);
                 _population[i].Fitness = fitness;
                 _population[i].IsEvaluated = true;
             }
@@ -159,7 +160,6 @@ public class GeneticAlgorithm : IDisposable
         return best;
     }
 
-    // --- STEP 6: CROSSOVER ---
     // --- STEP 6: CROSSOVER (Two-Point Crossover) ---
     private Genome Crossover(Genome parentA, Genome parentB)
     {
@@ -184,15 +184,15 @@ public class GeneticAlgorithm : IDisposable
     // --- STEP 7: MUTATION (Adaptive "Earthquake" Mutation) ---
     private void Mutate(ref Genome child)
     {
-        // Jeśli utknęliśmy od 40 generacji, wywołujemy "Trzęsienie Ziemi" (Hiper-mutacja)
-        bool earthquake = _stagnationCounter > 40;
+        // Trzęsienie ziemi (earthquake) próbuje zniszczyć zator. 
+        // ALE! Jeśli działa Safeguard, wyłączamy trzęsienia, żeby algorytm mógł
+        // spokojnie i precyzyjnie poukładać okienka studentów bez ciągłego wybuchania.
+        bool earthquake = _stagnationCounter > 40 && !_safeguardActive;
 
         for (int i = 0; i < _genomeLength; i++)
         {
             bool isBroken = child.IsBroken(i);
             
-            // Jeśli utknęliśmy, sztucznie zwiększamy szansę na mutację, 
-            // by wymusić zniszczenie zatoru i przetasowanie sal.
             float effectiveMutationRate = isBroken 
                 ? (earthquake ? 0.95f : 0.50f) 
                 : (earthquake ? _mutationRate * 5f : _mutationRate);
@@ -237,12 +237,31 @@ public class GeneticAlgorithm : IDisposable
 
     public void StepGeneration()
     {
+        bool wasSafeguardActive = _safeguardActive;
+        
+        // Odpalamy Safeguard, jeśli utknęliśmy od 100 generacji
+        _safeguardActive = _stagnationCounter > 100;
+
+        // Jeśli tryb właśnie się aktywował, musimy zresetować wszystkie oceny, 
+        // by ewaluator przeliczył je od nowa z uwzględnieniem bonusów za Soft Constraints
+        if (_safeguardActive && !wasSafeguardActive)
+        {
+            Console.WriteLine("\n[!] SAFEGUARD AKTYWNY: Brak możliwości naprawy hard constraints.");
+            Console.WriteLine("    Przełączam silnik na optymalizację Soft Constraints (okienka, preferencje) uszkodzonego planu...\n");
+            
+            for (int i = 0; i < _populationSize; i++)
+            {
+                _population[i].IsEvaluated = false;
+            }
+        }
+
         EvaluatePopulation();
         SortPopulationByFitness();
         
-        // Śledzenie stagnacji
         float currentBest = _population[0].Fitness;
-        if (Math.Abs(currentBest - _lastBestFitness) < 0.01f)
+        
+        // Śledzenie stagnacji
+        if (Math.Abs(currentBest - _lastBestFitness) < 0.001f)
         {
             _stagnationCounter++;
         }
@@ -250,6 +269,7 @@ public class GeneticAlgorithm : IDisposable
         {
             _stagnationCounter = 0;
             _lastBestFitness = currentBest;
+            _safeguardActive = false; // Wyłączamy safeguard, jeśli algorytm naturalnie poszedł do przodu!
         }
 
         CreateNextGeneration(); 
