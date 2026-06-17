@@ -1,12 +1,16 @@
 using System;
 using System.Buffers;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 
-public class GeneticAlgorithm
+// Added IDisposable so we can safely clean up the ThreadLocal memory when the solver finishes
+public class GeneticAlgorithm : IDisposable
 {
     private Genome[] _population;
-    private readonly FitnessEvaluator _evaluator;
+    
+    // ZMIANA 1: Zmiana pojedynczego ewaluatora na ThreadLocal
+    private readonly ThreadLocal<FitnessEvaluator> _evaluators;
     
     private readonly int _populationSize;
     private readonly int _genomeLength;
@@ -16,13 +20,14 @@ public class GeneticAlgorithm
     private readonly int _breedablePoolSize;
     private readonly TimetableMapper _mapper;
     private readonly int _immigrationCount;
+    private int _stagnationCounter = 0;
+    private float _lastBestFitness = float.MinValue;
 
     public int[] GetBestGenes()
     {
         return _population[0].Genes;
     }
 
-    // Pass the mapper into the GA constructor
     public GeneticAlgorithm(int popSize, float mutRate, int elite, TimetableMapper mapper, int immigrationCount = 50, float parentSelectionPercentage = 0.3f)
     {
         _populationSize = popSize;
@@ -32,27 +37,25 @@ public class GeneticAlgorithm
         _parentSelectionPercentage = parentSelectionPercentage;
         _immigrationCount = immigrationCount;
         
-        // Calculate how many of the top individuals are eligible for breeding
         _breedablePoolSize = Math.Max(elite + 1, (int)(_populationSize * parentSelectionPercentage));
 
         _genomeLength = mapper.GenomeLength; 
         _population = new Genome[_populationSize];
-        _evaluator = new FitnessEvaluator(mapper); 
+        
+        // ZMIANA 2: Inicjalizacja ThreadLocal. Każdy wątek CPU dostanie swoją własną kopię ewaluatora.
+        _evaluators = new ThreadLocal<FitnessEvaluator>(() => new FitnessEvaluator(mapper)); 
+        
         InitializePopulation();
     }
-
-    
 
     // --- MAIN LOOP ---
     public void Run(int generations)
     {
-
         for (int generation = 0; generation < generations; generation++)
         {
             EvaluatePopulation();
             SortPopulationByFitness();
             
-            // Check termination condition (perfect score)
             if (_population[0].Fitness >= 99.9f) 
             {
                 Console.WriteLine($"Perfect solution found at generation {generation}!");
@@ -69,11 +72,8 @@ public class GeneticAlgorithm
         for (int i = 0; i < _populationSize; i++)
         {
             Genome seed = _mapper.CreateSmartSeedGenome(Random.Shared);
-            
             int[] rentedGenes = ArrayPool<int>.Shared.Rent(_genomeLength);
-            
             seed.Genes.CopyTo(rentedGenes, 0);
-            
             _population[i] = new Genome(rentedGenes);
         }
     }
@@ -85,8 +85,8 @@ public class GeneticAlgorithm
         {
             if (!_population[i].IsEvaluated)
             {
-                // Evaluator will write broken-gene flags directly into the genome's mask
-                var fitness = _evaluator.Evaluate(_population[i]);
+                // ZMIANA 3: Użycie _evaluators.Value gwarantuje absolutne bezpieczeństwo wątków
+                var fitness = _evaluators.Value.Evaluate(_population[i]);
 
                 _population[i].Fitness = fitness;
                 _population[i].IsEvaluated = true;
@@ -105,13 +105,13 @@ public class GeneticAlgorithm
     {
         Genome[] nextGeneration = new Genome[_populationSize];
 
-        // 4A. Elitism: Copy the absolute best directly to the next generation
+        // 4A. Elitism
         for (int i = 0; i < _elitismCount; i++)
         {
             nextGeneration[i] = _population[i];
         }
 
-        // 4B. Breed the rest of the population
+        // 4B. Breed 
         int breedLimit = _populationSize - _immigrationCount;
         for (int i = _elitismCount; i < breedLimit; i++)
         {
@@ -124,24 +124,18 @@ public class GeneticAlgorithm
             nextGeneration[i] = child;
         }
 
-        // 4C. IMMIGRATION: Inject fresh, smart seeds to replace the bottom
+        // 4C. IMMIGRATION
         for (int i = breedLimit; i < _populationSize; i++)
         {
-            // 1. Generate a mathematically valid smart seed
             Genome freshSeed = _mapper.CreateSmartSeedGenome(Random.Shared);
-            
-            // 2. Rent an array for it (keeping our Memory Pool architecture intact)
             int[] rentedGenes = ArrayPool<int>.Shared.Rent(_genomeLength);
             freshSeed.Genes.CopyTo(rentedGenes, 0);
-            
-            // 3. Add to the new generation
             nextGeneration[i] = new Genome(rentedGenes);
         }
 
-        // 4C. Memory Cleanup: Return old, unused arrays to the pool
+        // 4D. Memory Cleanup
         for (int i = _elitismCount; i < _populationSize; i++)
         {
-            // Don't return elite arrays
             ArrayPool<int>.Shared.Return(_population[i].Genes);
         }
 
@@ -152,7 +146,6 @@ public class GeneticAlgorithm
     private Genome SelectParentTournament()
     {
         int tournamentSize = 5;
-        // Select randomly from the top parentSelectionPercentage of the population
         Genome best = _population[Random.Shared.Next(0, _breedablePoolSize)];
 
         for (int i = 1; i < tournamentSize; i++)
@@ -167,36 +160,42 @@ public class GeneticAlgorithm
     }
 
     // --- STEP 6: CROSSOVER ---
+    // --- STEP 6: CROSSOVER (Two-Point Crossover) ---
     private Genome Crossover(Genome parentA, Genome parentB)
     {
         int[] childGenes = ArrayPool<int>.Shared.Rent(_genomeLength);
         
+        // Zamiast miksować 50/50 (co niszczy całe dni), wycinamy jeden ciągły blok genów 
+        // od rodzica A i wsadzamy go w środek planu rodzica B.
+        int point1 = Random.Shared.Next(0, _genomeLength);
+        int point2 = Random.Shared.Next(point1, _genomeLength);
+
         for (int i = 0; i < _genomeLength; i++)
         {
-            // 50/50 chance to take the gene from Parent A or Parent B
-            if (Random.Shared.NextDouble() < 0.5)
-            {
+            if (i >= point1 && i < point2)
                 childGenes[i] = parentA.Genes[i];
-            }
             else
-            {
                 childGenes[i] = parentB.Genes[i];
-            }
         }
 
         return new Genome(childGenes);
     }
 
-    // --- STEP 7: MUTATION ---
+    // --- STEP 7: MUTATION (Adaptive "Earthquake" Mutation) ---
     private void Mutate(ref Genome child)
     {
+        // Jeśli utknęliśmy od 40 generacji, wywołujemy "Trzęsienie Ziemi" (Hiper-mutacja)
+        bool earthquake = _stagnationCounter > 40;
+
         for (int i = 0; i < _genomeLength; i++)
         {
-            // Is this specific course flagged as broken in the genome's mask?
             bool isBroken = child.IsBroken(i);
-
-            // 50% chance to mutate if broken, 1% if it's fine
-            float effectiveMutationRate = isBroken ? 0.50f : _mutationRate;
+            
+            // Jeśli utknęliśmy, sztucznie zwiększamy szansę na mutację, 
+            // by wymusić zniszczenie zatoru i przetasowanie sal.
+            float effectiveMutationRate = isBroken 
+                ? (earthquake ? 0.95f : 0.50f) 
+                : (earthquake ? _mutationRate * 5f : _mutationRate);
 
             if (Random.Shared.NextDouble() < effectiveMutationRate)
             {
@@ -205,24 +204,22 @@ public class GeneticAlgorithm
             }
         }
     }
-
-    public float GetBestFitness()
+    public void RunDiagnostics()
     {
-        return _population[0].Fitness;
+        // Używa pierwszego dostępnego ewaluatora, by zdiagnozować najlepszy genom
+        _evaluators.Value.AnalyzeViolations(_population[0]);
     }
+    public float GetBestFitness() => _population[0].Fitness;
 
     public float GetWorstFitness()
     {
-        // Find the actual worst evaluated fitness (avoid unevaluated Fitness=0 placeholders)
         for (int i = _populationSize - 1; i >= 0; i--)
         {
-            if (_population[i].IsEvaluated)
-            {
-                return _population[i].Fitness;
-            }
+            if (_population[i].IsEvaluated) return _population[i].Fitness;
         }
-        return 0f; // No evaluated individuals (shouldn't happen)
+        return 0f; 
     }
+
     public float GetAverageFitness()
     {
         float totalFitness = 0;
@@ -238,16 +235,28 @@ public class GeneticAlgorithm
         return evaluatedCount > 0 ? totalFitness / evaluatedCount : 0f;
     }
 
-    /// <summary>
-    /// Runs a single generation cycle. 
-    /// This replaces the internal 'for' loop in the Run() method so you can control it externally.
-    /// </summary>
     public void StepGeneration()
     {
         EvaluatePopulation();
-        
         SortPopulationByFitness();
         
+        // Śledzenie stagnacji
+        float currentBest = _population[0].Fitness;
+        if (Math.Abs(currentBest - _lastBestFitness) < 0.01f)
+        {
+            _stagnationCounter++;
+        }
+        else
+        {
+            _stagnationCounter = 0;
+            _lastBestFitness = currentBest;
+        }
+
         CreateNextGeneration(); 
+    }
+    // ZMIANA 4: Czyszczenie pamięci po zakończeniu algorytmu
+    public void Dispose()
+    {
+        _evaluators?.Dispose();
     }
 }

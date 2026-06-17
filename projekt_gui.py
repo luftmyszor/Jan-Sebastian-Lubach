@@ -388,7 +388,7 @@ class ScheduleApp:
                 clean_line = line.strip()
                 if not clean_line: continue
                 
-                # Przechwytywanie formatu z C#: "PROGRESS|10|845.20"
+                # Przechwytywanie formatu z C#: "PROGRESS|10|845.20|123"
                 if clean_line.startswith("PROGRESS|") or clean_line.startswith("PERFECT_SOLUTION|"):
                     parts = clean_line.split("|")
                     if len(parts) >= 3:

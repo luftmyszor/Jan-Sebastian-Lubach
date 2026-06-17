@@ -32,72 +32,107 @@ namespace Backend.Tester
             var mapper = new TimetableMapper(courses, instructors, rooms, slotsPerDay: timeConfig.SlotsPerDay, days: 5); 
 
             Console.WriteLine("\n[PHASE 3] Running Genetic Algorithm...");
-            int popSize = 1000;            
-            float mutRate = 0.05f;         
-            int elitism = 50;              
-            int immigrationCount = 60;     
-            float parentPercentage = 0.7f; 
-            int maxGenerations = 10000;
 
-            Console.WriteLine($"Courses: {courses.Count} | Instructors: {instructors.Count} | Rooms: {rooms.Count}");
-            Console.WriteLine("Gen\tBest\tAvg\tWorst\tTime(ms)");
-            Console.WriteLine("--------------------------------------------------");
-
-            var ga = new GeneticAlgorithm(popSize, mutRate, elitism, mapper, immigrationCount, parentPercentage);
-            var stopwatch = Stopwatch.StartNew();
-
-            for (int i = 1; i <= maxGenerations; i++)
+            foreach (var teacher in instructors)
             {
-                ga.StepGeneration();
+                teacher.InitializeBitmasks();
+            }
+            // -------------------------------------------------------------
+            // USTAWIENIA ALGORYTMU GENETYCZNEGO
+            // -------------------------------------------------------------
+            int popSize = 250;
+            float mutRate = 0.05f;
+            int elitismCount = 5;               
+            int immigrationCount = 50;          
+            float parentPercentage = 0.3f;      
 
-                if (i % 10 == 0 || i == 1)
+            int maxGenerations = 2000;
+            float bestFitnessEver = float.MinValue;
+            
+            using (var ga = new GeneticAlgorithm(popSize, mutRate, elitismCount, mapper, immigrationCount, parentPercentage))
+            {
+                for (int gen = 0; gen < maxGenerations; gen++)
                 {
-                    float bestFitness = ga.GetBestFitness(); 
-                    Console.WriteLine($"PROGRESS|{i}|{bestFitness:F2}");
-                    if (bestFitness >= 940.0f)
+                    var generationStopwatch = Stopwatch.StartNew();
+
+                    ga.StepGeneration();
+
+                    float currentBest = ga.GetBestFitness();
+                    long generationTimeMs = generationStopwatch.ElapsedMilliseconds;
+
+                    if (currentBest > bestFitnessEver)
                     {
-                        Console.WriteLine($"PERFECT_SOLUTION|{i}|{bestFitness:F2}");
+                        bestFitnessEver = currentBest;
+                    }
+
+
+
+                    if (gen % 10 == 0) 
+                    {
+                        generationStopwatch.Stop();
+                        Console.WriteLine($"PROGRESS|{gen}|{currentBest:0.00}|{generationTimeMs}");
+                    }
+
+                    if (currentBest >= 995.0f)
+                    {
+                        Console.WriteLine($"PERFECT_SOLUTION|{gen}|{currentBest:0.00}|{generationTimeMs}");
                         break;
                     }
                 }
-            }
+                ga.RunDiagnostics();
 
-            stopwatch.Stop();
-
-            Console.WriteLine("\n[PHASE 4] Exporting generated schedule...");
-            var bestGenes = ga.GetBestGenes();
-            var exportedSchedule = new List<object>();
-            string[] days = {"Poniedziałek", "Wtorek", "Środa", "Czwartek", "Piątek"};
-
-            for (int idx = 0; idx < courses.Count; idx++)
-            {
-                var (t, r, s) = mapper.Decode(bestGenes[idx]);
-                var course = courses[idx];
-                var instructor = instructors[t];
-                var room = rooms[r];
-
-                int dayIdx = s / timeConfig.SlotsPerDay;
-                int slotIdx = s % timeConfig.SlotsPerDay;
+                // =========================================================
+                // NAPRAWIONY ZAPIS WYNIKU DO JSON
+                // =========================================================
+                int[] bestGenome = ga.GetBestGenes();
                 
-                if(dayIdx >= days.Length) continue;
+                // Tworzymy listę obiektów, które będą pasować do formatu GUI w Pythonie
+                var exportList = new System.Collections.Generic.List<object>();
+                
+                string[] daysPl = { "Poniedziałek", "Wtorek", "Środa", "Czwartek", "Piątek" };
+                string[] hoursPl = { "08:00 - 09:30", "09:45 - 11:15", "11:30 - 13:00", "13:15 - 14:45", "15:00 - 16:30", "16:45 - 18:15", "18:30 - 20:00" };
+                int slotsPerDay = hoursPl.Length; 
 
-                var timeSlot = timeConfig.Slots[slotIdx];
-                string timeStr = $"{timeSlot.Start} - {timeSlot.End}";
+                // Ręczne dekodowanie każdego genu z int do czytelnych wartości
+                for (int i = 0; i < bestGenome.Length; i++)
+                {
+                    var (t, r, s) = mapper.Decode(bestGenome[i]);
+                    var course = mapper.Courses[i];
+                    
+                    // Rozbijamy długie zajęcia na pojedyncze kafelki (godziny)
+                    for(int offset = 0; offset < course.RequiredSlots; offset++)
+                    {
+                        int currentS = s + offset;
+                        int d = currentS / slotsPerDay;
+                        int h = currentS % slotsPerDay;
 
-                exportedSchedule.Add(new {
-                    klasa = course.GroupId, 
-                    wykladowca = instructor.Name,
-                    przedmiot = course.Name,
-                    typ = course.Type.ToUpper(),
-                    dzien = days[dayIdx],
-                    godzina = timeStr,
-                    sala = room.Name
-                });
+                        // Upewniamy się, że nie wykraczamy poza tydzień
+                        if (d >= 0 && d < 5 && h >= 0 && h < slotsPerDay)
+                        {
+                            exportList.Add(new {
+                                dzien = daysPl[d],
+                                godzina = hoursPl[h],
+                                sala = mapper.Rooms[r].Id,
+                                // Tutaj wstawiamy ID np "I01", bo napisaliśmy wcześniej łatkę 
+                                // w Pythonie, która i tak sama zamieni to na "prof. dr hab. ..."
+                                wykladowca = mapper.Instructors[t].Id, 
+                                przedmiot = course.Name,
+                                klasa = course.GroupId,
+                                typ = course.Type
+                            });
+                        }
+                    }
+                }
+
+                string outputFilename = "generated_timetable.json";
+                var options = new System.Text.Json.JsonSerializerOptions { WriteIndented = true };
+                string jsonString = System.Text.Json.JsonSerializer.Serialize(exportList, options);
+                
+                System.IO.File.WriteAllText(outputFilename, jsonString);
+
+                Console.WriteLine($"DONE|{outputFilename}");
+                
             }
-
-            string outputPath = "generated_timetable.json";
-            System.IO.File.WriteAllText(outputPath, System.Text.Json.JsonSerializer.Serialize(exportedSchedule));
-            Console.WriteLine($"DONE|{outputPath}");
         }
     }
 }

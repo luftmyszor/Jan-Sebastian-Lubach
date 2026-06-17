@@ -27,7 +27,31 @@ public class Instructor
     [JsonPropertyName("parsed_preferences")] public InstructorPreferences? ParsedPreferences { get; set; }
     [JsonIgnore] public List<int> AvailableSlots { get; set; } = new(); 
     [JsonIgnore] public List<int> PreferredSlots { get; set; } = new();
+
+    public ulong AvailableSlotsMask; 
+    public ulong PreferredSlotsMask; 
+
+    public void InitializeBitmasks()
+        {
+            AvailableSlotsMask = 0;
+            PreferredSlotsMask = 0;
+
+            // Przerabiamy listy na bity. 
+            // Operator "|=" zapala odpowiednią żarówkę, a "1UL << slot" wybiera którą.
+            if (AvailableSlots != null)
+            {
+                foreach (int slot in AvailableSlots)
+                    AvailableSlotsMask |= (1UL << slot);
+            }
+
+            if (PreferredSlots != null)
+            {
+                foreach (int slot in PreferredSlots)
+                    PreferredSlotsMask |= (1UL << slot);
+            }
+        }
 }
+
 
 public class Room
 {
